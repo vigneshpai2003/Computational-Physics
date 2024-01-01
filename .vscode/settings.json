@@ -1,0 +1,6 @@
+{
+    "fortran.formatting.findentArgs": [
+        "-i4"
+    ],
+    "fortran.fortls.disableAutoupdate": true
+}

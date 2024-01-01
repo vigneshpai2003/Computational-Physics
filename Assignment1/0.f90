@@ -1,6 +1,6 @@
 program assignment
     use, intrinsic :: iso_fortran_env
-    implicit none
+    implicit noNe
 
     integer :: int
     real(real32) :: real_number

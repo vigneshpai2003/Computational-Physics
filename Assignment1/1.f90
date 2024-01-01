@@ -1,6 +1,7 @@
 program assignment
     implicit none
 
-    real*8 :: x
-    
+    real*4 :: x
+
+    print *, x
 end program assignment
