@@ -6,10 +6,13 @@
             "type": "shell",
             "command": "gfortran",
             "args": [
-                "${file}",
+                "${fileBasename}",
                 "-o",
-                "${fileDirname}/${fileBasenameNoExtension}.out"
+                "${fileBasenameNoExtension}.out"
             ],
+            "options": {
+                "cwd": "${fileDirname}"
+            },
             "group": "build",
             "presentation": {
                 "echo": true,
@@ -24,7 +27,10 @@
             "label": "run fortran",
             "dependsOn": ["build fortran"],
             "type": "shell",
-            "command": "./${relativeFileDirname}/${fileBasenameNoExtension}.out",
+            "command": "./${fileBasenameNoExtension}.out",
+            "options": {
+                "cwd": "${fileDirname}"
+            },
             "group": {
                 "kind": "build",
                 "isDefault": true
