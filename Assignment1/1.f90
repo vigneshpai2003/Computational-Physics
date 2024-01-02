@@ -36,7 +36,6 @@ program assignment
 
     ! DECLARE VARIABLE
     real :: x(10), xe2(100), xe4(10000), xe6(1000000), A(10, 10)
-    real :: r
 
     integer, allocatable :: seed(:)
     integer :: seed_size, io, i
@@ -110,11 +109,12 @@ program assignment
     print *, "Delta for 1000000 random numbers" , abs(0.50d0 - avg(xe6))
 
     ! h)
-    open(newunit=io, file="1h.dat")
+    open(newunit=io, file="sumofrandnum.dat")
     do i = 1, 10000
         call random_number(xe4)
         write(io, "(F10.5)") sum(xe4)
     end do
+    close(io)
 
     deallocate(seed)
 end program assignment
