@@ -21,7 +21,7 @@ contains
 
         do i = 1, size(arr)
             if (format /= "") then
-             write(target, format) arr(i)
+                write(target, format) arr(i)
             else
                 write(target, *) arr(i)
             end if
@@ -53,7 +53,7 @@ program assignment
     print *, x
 
     ! b) save the numbers to a file
-    open(newunit=io, file="test_ran.dat")
+    open(newunit=io, file="data/test_ran.dat")
     call write_array(io, myformat, x)
 
     ! c) writing a comment
@@ -75,18 +75,18 @@ program assignment
         call random_number(A(:, i))
     end do
 
-    open(newunit=io, file="test_ran_10_seeds.dat")
+    open(newunit=io, file="data/test_ran_10_seeds.dat")
     do i = 1, 10
         write(io,'(10(F12.10, " "))') A(i, :)
     end do
     close(io)
 
     ! e) calculating average
-    open(newunit=io, file="test_ran.dat", position="append", status="old", action="write")
+    open(newunit=io, file="data/test_ran.dat", position="append", status="old", action="write")
 
     ! e), f)
     call random_seed() ! reset to a random seed
-    
+
     call random_number(x)
     call random_number(xe2)
     call random_number(xe4)
@@ -109,12 +109,30 @@ program assignment
     print *, "Delta for 1000000 random numbers" , abs(0.50d0 - avg(xe6))
 
     ! h)
-    open(newunit=io, file="sumofrandnum.dat")
+    ! sum of random numbers between 0 and 1
+    open(newunit=io, file="data/sumofrandnum1.dat")
     do i = 1, 10000
         call random_number(xe4)
-        write(io, "(F10.5)") sum(xe4)
+        write(io, *) sum(xe4)
     end do
     close(io)
+
+    ! sum of random numbers between -1 and 1
+    open(newunit=io, file="data/sumofrandnum2.dat")
+    do i = 1, 10000
+        call random_number(xe4)
+        write(io, *) sum(xe4 * 2 - 1)
+    end do
+    close(io)
+
+    open(newunit=io, file="data/sumofrandnum3.dat")
+    do i = 1, 100000
+        call random_number(xe4)
+        write(io, *) sum(xe4 * 2 - 1)
+    end do
+    close(io)
+
+    ! i)
 
     deallocate(seed)
 end program assignment

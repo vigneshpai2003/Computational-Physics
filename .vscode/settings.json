@@ -5,8 +5,9 @@
     "fortran.fortls.disableAutoupdate": true,
     
     "code-runner.clearPreviousOutput": true,
+    "code-runner.saveFileBeforeRun": true,
     "code-runner.executorMap": {
         "python": ". ./venv/bin/activate && cd $dir && python3 $fileName",
-        "FortranFreeForm": "cd $dir && gfortran $fileName -o $fileNameWithoutExt.out && ./$fileNameWithoutExt.out",
+        "FortranFreeForm": "cd $dir && gfortran $fileName -o bin/$fileNameWithoutExt.out && ./bin/$fileNameWithoutExt.out",
     }
 }
