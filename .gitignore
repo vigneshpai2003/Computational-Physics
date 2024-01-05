@@ -1,4 +1,4 @@
-*.obj
+*.o
 *.mod
 *.bin
 venv

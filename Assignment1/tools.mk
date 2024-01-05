@@ -20,17 +20,16 @@ newline = @echo ""
 run-start = $(green)▶$(reset)
 process-start = 🌊
 compile-start = 🛠️
-link-start = 🔗
+link-start = ⛓️
 clean-start = 🔥
 
 # folder structure
 OBJ_DIR = obj
 SRC_DIR = src
 BIN_DIR = bin
-DATA_DIR = data
 
 # extensions of compiled files
-OBJ_EXT = obj
+OBJ_EXT = o
 BIN_EXT = bin
 
 # compile fortran files
@@ -43,7 +42,7 @@ $(OBJ_DIR)/%.$(OBJ_EXT): $(SRC_DIR)/%.f90
 # $(1) is the name of the binary, $(2) is the files to be linked
 define link
 $(BIN_DIR)/$(1).$(BIN_EXT): $(patsubst %.f90,$(OBJ_DIR)/%.$(OBJ_EXT),$(2))
-	@echo "$(link-start) LINKING $$^"
+	@echo "$(link-start)  LINKING $$^"
 	$(FC) -o $$@ $$^
 	$(newline)
 endef
@@ -53,11 +52,3 @@ clean:
 	@echo "$(clean-start) CLEANING: removing objects and binaries"
 	rm -f $(OBJ_DIR)/* $(BIN_DIR)/*
 	$(newline)
-
-# remove data generated
-clean-data:
-	@echo "$(clean-start) CLEANING: removing data files"
-	rm -f $(DATA_DIR)/*
-	$(newline)
-
-cleanall: clean clean-data

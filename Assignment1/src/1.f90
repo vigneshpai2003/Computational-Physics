@@ -116,7 +116,7 @@ program assignment
     end do
     close(io)
 
-    ! ==> j) larger random walks
+    ! ==> l) larger random walks
     open(newunit=io, file="data/randomwalk3.dat")
     do i = 1, 100000
         call random_number(xe5)

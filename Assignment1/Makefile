@@ -27,3 +27,22 @@ process:
 	@echo "$(process-start) Processing"
 	@../venv/bin/python3 processing.py
 	$(newline)
+
+### CLEANING
+
+DATA_DIR = data
+FIG_DIR = figures
+
+# remove data generated
+clean-data:
+	@echo "$(clean-start) CLEANING: removing data files"
+	rm -f $(DATA_DIR)/*
+	$(newline)
+
+# remove figures generated
+clean-figs:
+	@echo "$(clean-start) CLEANING: removing figures"
+	rm -f $(FIG_DIR)/*
+	$(newline)
+
+cleanall: clean clean-data clean-figs
