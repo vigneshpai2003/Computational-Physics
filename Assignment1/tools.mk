@@ -32,8 +32,12 @@ BIN_DIR = bin
 OBJ_EXT = o
 BIN_EXT = bin
 
+# make required folders
+build-folders:
+	@mkdir -p ${OBJ_DIR} ${BIN_DIR}
+
 # compile fortran files
-$(OBJ_DIR)/%.$(OBJ_EXT): $(SRC_DIR)/%.f90
+$(OBJ_DIR)/%.$(OBJ_EXT): $(SRC_DIR)/%.f90 build-folders
 	@echo "$(compile-start)  COMPILING $<"
 	$(FC) -J$(OBJ_DIR) -o $@ -c $<
 	$(newline)

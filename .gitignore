@@ -1,4 +1,6 @@
-*.o
-*.mod
-*.bin
-venv
+venv/
+
+data
+figures
+bin
+obj

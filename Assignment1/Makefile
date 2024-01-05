@@ -2,6 +2,13 @@ all: build run process
 
 include tools.mk
 
+# folders for generated data
+DATA_DIR = data
+FIG_DIR = figures
+
+myfolders:
+	@mkdir -p $(DATA_DIR) $(FIG_DIR)
+
 # source files for binaries
 q0_SRC = 0.f90
 q1_SRC = utils.f90 1.f90
@@ -14,7 +21,7 @@ $(eval $(call link,q1,$(q1_SRC)))
 build: $(BIN_DIR)/q0.$(BIN_EXT) $(BIN_DIR)/q1.$(BIN_EXT)
 
 # run binaries
-run:
+run: myfolders
 	@echo "$(run-start) Running q0"
 	@$(timer) ./$(BIN_DIR)/q0.$(BIN_EXT)
 	$(newline)
@@ -23,15 +30,12 @@ run:
 	$(newline)
 
 # process the data with python
-process:
+process: myfolders
 	@echo "$(process-start) Processing"
 	@../venv/bin/python3 processing.py
 	$(newline)
 
 ### CLEANING
-
-DATA_DIR = data
-FIG_DIR = figures
 
 # remove data generated
 clean-data:
