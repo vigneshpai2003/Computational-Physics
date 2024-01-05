@@ -3,7 +3,7 @@ program assignment
     implicit none
 
     ! DECLARE VARIABLE
-    real :: x(10), xe2(100), xe4(10000), xe6(1000000), A(10, 10)
+    real :: x(10), xe2(100), xe4(10000), xe5(100000), xe6(1000000), A(10, 10)
 
     integer, allocatable :: seed(:)
     integer :: seed_size, io, i
@@ -16,18 +16,18 @@ program assignment
     seed(:) = 1
     call random_seed(put=seed)
 
-    ! a) print 10 random numbers
+    ! ==> a) print 10 random numbers
     call random_number(x)
     print *, x
 
-    ! b) save the numbers to a file
+    ! ==> b) save the numbers to a file
     open(newunit=io, file="data/test_ran.dat")
     call write_array(io, myformat, x)
 
-    ! c) writing a comment
+    ! ==> c) writing a comment
     write(io, "(A)") "Changing seed and generating 10 new random numbers"
 
-    ! d) new random numbers
+    ! ==> d) new random numbers
     seed(:) = 2
     call random_seed(put=seed)
     call random_number(x)
@@ -36,7 +36,7 @@ program assignment
 
     close(io)
 
-    ! d) test_ran_10_seeds.dat
+    ! ==> d) test_ran_10_seeds.dat
     do i = 1, 10
         seed(:) = i
         call random_seed(put=seed)
@@ -49,10 +49,10 @@ program assignment
     end do
     close(io)
 
-    ! e) calculating average
+    ! ==> e) calculating average
     open(newunit=io, file="data/test_ran.dat", position="append", status="old", action="write")
 
-    ! e), f)
+    ! ==> e), f)
     call random_seed() ! reset to a random seed
 
     call random_number(x)
@@ -71,12 +71,12 @@ program assignment
 
     close(io)
 
-    ! g)
+    ! ==> g)
     print *, "Delta for 100 random numbers" , abs(0.50d0 - avg(xe2))
     print *, "Delta for 10000 random numbers" , abs(0.50d0 - avg(xe4))
     print *, "Delta for 1000000 random numbers" , abs(0.50d0 - avg(xe6))
 
-    ! h)
+    ! ==> h)
     ! sum of random numbers between 0 and 1
     open(newunit=io, file="data/sumofrandnum1.dat")
     do i = 1, 10000
@@ -100,7 +100,29 @@ program assignment
     end do
     close(io)
 
-    ! i)
+    ! ==> i) random walks
+    open(newunit=io, file="data/randomwalk1.dat")
+    do i = 1, 10000
+        call random_number(xe4)
+        write(io, *) sum(sign(1.0, xe4 - 0.5))
+    end do
+    close(io)
+
+    ! ==> j) more random walks
+    open(newunit=io, file="data/randomwalk2.dat")
+    do i = 1, 100000
+        call random_number(xe4)
+        write(io, *) sum(sign(1.0, xe4 - 0.5))
+    end do
+    close(io)
+
+    ! ==> j) larger random walks
+    open(newunit=io, file="data/randomwalk3.dat")
+    do i = 1, 100000
+        call random_number(xe5)
+        write(io, *) sum(sign(1.0, xe5 - 0.5))
+    end do
+    close(io)
 
     deallocate(seed)
 end program assignment

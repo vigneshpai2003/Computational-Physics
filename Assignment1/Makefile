@@ -13,15 +13,17 @@ $(eval $(call link,q1,$(q1_SRC)))
 # build binaries
 build: $(BIN_DIR)/q0.$(BIN_EXT) $(BIN_DIR)/q1.$(BIN_EXT)
 
+# run binaries
 run:
-	@echo "==> Running q0"
-	@./$(BIN_DIR)/q0.$(BIN_EXT)
-	@echo ""
-	@echo "==> Running q1"
-	@./$(BIN_DIR)/q1.$(BIN_EXT)
-	@echo ""
+	@echo "$(run-start) Running q0"
+	@$(timer) ./$(BIN_DIR)/q0.$(BIN_EXT)
+	$(newline)
+	@echo "$(run-start) Running q1"
+	@$(timer) ./$(BIN_DIR)/q1.$(BIN_EXT)
+	$(newline)
 
+# process the data with python
 process:
-	@echo "==> Processing"
+	@echo "$(process-start) Processing"
 	@../venv/bin/python3 processing.py
-	@echo ""
+	$(newline)
