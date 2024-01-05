@@ -30,7 +30,7 @@ run: myfolders
 	$(newline)
 
 # process the data with python
-process: myfolders
+process:
 	@echo "$(process-start) Processing"
 	@../venv/bin/python3 processing.py
 	$(newline)
@@ -49,4 +49,4 @@ clean-figs:
 	rm -f $(FIG_DIR)/*
 	$(newline)
 
-cleanall: clean clean-data clean-figs
+cleanall: clean-build clean-data clean-figs

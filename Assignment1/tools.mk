@@ -52,7 +52,7 @@ $(BIN_DIR)/$(1).$(BIN_EXT): $(patsubst %.f90,$(OBJ_DIR)/%.$(OBJ_EXT),$(2))
 endef
 
 # remove compiled files and binaries
-clean:
+clean-build:
 	@echo "$(clean-start) CLEANING: removing objects and binaries"
 	rm -f $(OBJ_DIR)/* $(BIN_DIR)/*
 	$(newline)
