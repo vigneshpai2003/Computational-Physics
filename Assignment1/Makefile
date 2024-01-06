@@ -1,52 +1,74 @@
+### GLOBAL VARIABLES >>>
+
+# fortran compiler
+FC = gfortran
+
+# colors
+reset = \e[0m
+black = \e[;30m
+red = \e[;31m
+green = \e[;32m
+yellow = \e[;33m
+blue = \e[;34m
+magenta = \e[;35m
+cyan = \e[;36m
+white = \e[;37m
+
+run-start = $(green)▶$(reset)
+process-start = 🌊
+compile-start = 🛠️
+link-start = ⛓️
+clean-start = 🔥
+
+# folder structure
+OBJ_DIR = obj
+SRC_DIR = src
+BIN_DIR = bin
+
+# extensions of compiled files
+OBJ_EXT = o
+BIN_EXT = bin
+
+# usefull shortcuts
+TIMER = /usr/bin/time --format="\n Executed in %e seconds with %P CPU"
+MAKE_OUT_DIR = @mkdir -p $(@D)
+NEWLINE = @echo "" 
+
+### <<<
+
 all: build run process
 
-include tools.mk
+### BUILDING >>>
 
-# folders for generated data
-DATA_DIR = data
-FIG_DIR = figures
+# compile fortran files
+$(OBJ_DIR)/%.$(OBJ_EXT): $(SRC_DIR)/%.f90
+	@echo "$(compile-start)  COMPILING $<"
+	$(MAKE_OUT_DIR)
+	$(FC) -J$(OBJ_DIR) -o $@ -c $<
+	$(NEWLINE)
 
-myfolders:
-	@mkdir -p $(DATA_DIR) $(FIG_DIR)
+# link fortran files
+# $(1) is the name of the binary, $(2) is the files to be linked
+define link
+$(BIN_DIR)/$(1).$(BIN_EXT): $(patsubst %.f90,$(OBJ_DIR)/%.$(OBJ_EXT),$(2))
+	@echo "$(link-start)  LINKING $$^"
+	$$(MAKE_OUT_DIR)
+	$(FC) -o $$@ $$^
+	$(NEWLINE)
+endef
 
-# source files for binaries
-q0_SRC = 0.f90
-q1_SRC = utils.f90 1.f90
+### <<<
 
-# define linking of source files
-$(eval $(call link,q0,$(q0_SRC)))
-$(eval $(call link,q1,$(q1_SRC)))
+### CLEANING >>>
 
-# build binaries
-build: $(BIN_DIR)/q0.$(BIN_EXT) $(BIN_DIR)/q1.$(BIN_EXT)
+# remove compiled files and binaries
+clean-build:
+	@echo "$(clean-start) CLEANING: removing objects and binaries"
+	rm -rf $(OBJ_DIR) $(BIN_DIR)
+	$(NEWLINE)
 
-# run binaries
-run: myfolders
-	@echo "$(run-start) Running q0"
-	@$(timer) ./$(BIN_DIR)/q0.$(BIN_EXT)
-	$(newline)
-	@echo "$(run-start) Running q1"
-	@$(timer) ./$(BIN_DIR)/q1.$(BIN_EXT)
-	$(newline)
+clean: clean-build myclean # myclean is defined in settings
 
-# process the data with python
-process:
-	@echo "$(process-start) Processing"
-	@../venv/bin/python3 processing.py
-	$(newline)
+### <<<
 
-### CLEANING
-
-# remove data generated
-clean-data:
-	@echo "$(clean-start) CLEANING: removing data files"
-	rm -f $(DATA_DIR)/*
-	$(newline)
-
-# remove figures generated
-clean-figs:
-	@echo "$(clean-start) CLEANING: removing figures"
-	rm -f $(FIG_DIR)/*
-	$(newline)
-
-cleanall: clean-build clean-data clean-figs
+include settings.mk
