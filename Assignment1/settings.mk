@@ -3,11 +3,16 @@
 # run
 # process
 # latex
-# myclean
+# latex-dependencies
 
 # source files for binaries
 q0_SRC = 0.f90
 q1_SRC = utils.f90 1.f90
+
+DATA_DIR = data
+FIG_DIR = figures
+
+latex-dependencies = $(wildcard $(FIG_DIR)/*.png)
 
 # define linking of source files
 $(eval $(call link,q0,$(q0_SRC)))
@@ -15,9 +20,6 @@ $(eval $(call link,q1,$(q1_SRC)))
 
 # build binaries
 build: $(BIN_DIR)/q0.$(BIN_EXT) $(BIN_DIR)/q1.$(BIN_EXT)
-
-DATA_DIR = data
-FIG_DIR = figures
 
 # run binaries
 run:
@@ -50,4 +52,5 @@ clean-figs:
 	rm -rf $(FIG_DIR)
 	$(NEWLINE)
 
-myclean: clean-data clean-figs clean-latex
+# override default clean
+clean: clean-data clean-figs

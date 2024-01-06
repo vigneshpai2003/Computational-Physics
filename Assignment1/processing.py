@@ -1,6 +1,6 @@
 import matplotlib.pyplot as plt
 import numpy as np
-from scipy.stats import norm
+from scipy.stats import norm, linregress
 
 
 def fit_on_plot(a):
@@ -31,13 +31,15 @@ def q_random():
     # Plotting 1g
     with open("data/averages.dat") as f:
         a = [float(i) for i in f.readlines()]
-    
-    plt.scatter([10, 100, 10000, 1000000], a)
+
+    s = [10, 100, 10000, 1000000]
+    plt.scatter(s, a)
     plt.xscale('log')
     plt.yscale('log')
+    slope, *_ = linregress(np.log(s), np.log(a))
     add_plot_labels('Sample Size',
                     'Deviation from 0.5',
-                    '')
+                    f'slope = ${round(slope, 4)}$')
     savefig('figures/1g.png')
 
     # Plotting 1h

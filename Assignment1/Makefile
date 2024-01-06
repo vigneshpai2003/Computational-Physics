@@ -38,7 +38,7 @@ NEWLINE = @echo ""
 
 ### <<<
 
-all: build run process latex
+all: build run process latex # these are defined in settings
 
 ### BUILDING >>>
 
@@ -61,17 +61,6 @@ endef
 
 ### <<<
 
-### LaTeX >>>
-
-# compile latex
-$(TEX_DIR)/%.pdf: $(TEX_DIR)/%.tex
-	@echo "$(tex-start)  COMPILING LATEX $(^F)"
-	@cd $(TEX_DIR) && \
-	pdflatex $(^F) 1>/dev/null
-	$(NEWLINE)
-
-### <<<
-
 ### CLEANING >>>
 
 # remove compiled files and binaries
@@ -86,8 +75,15 @@ clean-latex:
 	rm -f $(TEX_DIR)/*.pdf $(TEX_DIR)/*.aux $(TEX_DIR)/*.fdb_latexmk $(TEX_DIR)/*.fls $(TEX_DIR)/*.log $(TEX_DIR)/*.gz
 	$(NEWLINE)
 
-clean: clean-build myclean # myclean is defined in settings
+clean: clean-build clean-latex
 
 ### <<<
 
 include settings.mk
+
+# compile latex files (the definition of this target depends on settings)
+$(TEX_DIR)/%.pdf: $(TEX_DIR)/%.tex $(latex-dependencies)
+	@echo "$(tex-start)  COMPILING LATEX $(<F)"
+	@cd $(TEX_DIR) && \
+	pdflatex -halt-on-error -interaction=nonstopmode -file-line-error $(<F) 1>/dev/null
+	$(NEWLINE)
