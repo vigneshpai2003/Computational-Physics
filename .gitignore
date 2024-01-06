@@ -4,3 +4,9 @@ data
 figures
 bin
 obj
+
+*.log
+*.aux
+*.gz
+*.fls
+*.fdb_latexmk

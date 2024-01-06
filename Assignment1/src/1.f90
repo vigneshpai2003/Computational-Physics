@@ -76,6 +76,14 @@ program assignment
     print *, "Delta for 10000 random numbers" , abs(0.50d0 - avg(xe4))
     print *, "Delta for 1000000 random numbers" , abs(0.50d0 - avg(xe6))
 
+    ! store these in a file for analysis
+    open(newunit=io, file="data/averages.dat")
+    write(io, *) abs(0.50d0 - avg(x))
+    write(io, *) abs(0.50d0 - avg(xe2))
+    write(io, *) abs(0.50d0 - avg(xe4))
+    write(io, *) abs(0.50d0 - avg(xe6))
+    close(io)
+
     ! ==> h)
     ! sum of random numbers between 0 and 1
     open(newunit=io, file="data/sumofrandnum1.dat")

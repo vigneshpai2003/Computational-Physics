@@ -2,6 +2,7 @@
 # build
 # run
 # process
+# latex
 # myclean
 
 # source files for binaries
@@ -35,6 +36,8 @@ process:
 	@$(TIMER) ../venv/bin/python3 processing.py
 	$(NEWLINE)
 
+latex: $(TEX_DIR)/submission.pdf
+
 # remove data generated
 clean-data:
 	@echo "$(clean-start) CLEANING: removing data files"
@@ -47,4 +50,4 @@ clean-figs:
 	rm -rf $(FIG_DIR)
 	$(NEWLINE)
 
-myclean: clean-data clean-figs
+myclean: clean-data clean-figs clean-latex

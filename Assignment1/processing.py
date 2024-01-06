@@ -8,13 +8,14 @@ def fit_on_plot(a):
     x = np.arange(min(a), max(a), 0.5)
     y = norm.pdf(x, mu, sigma)
     plt.plot(x, y, c='black')
-    return sigma
+    return mu, sigma
 
 
 def add_plot_labels(xlabel, ylabel, title, fitx=None):
     if fitx:
-        sigma = fit_on_plot(fitx)
-        plt.title(title + f'| $\sigma={round(sigma, 2)}$, $\sigma^2={round(sigma**2, 2)}$')
+        mu, sigma = fit_on_plot(fitx)
+        plt.title(
+            title + f'\n$\mu={round(mu, 2)}$, $\sigma={round(sigma, 2)}$, $\sigma^2={round(sigma**2, 2)}$')
     else:
         plt.title(title)
     plt.xlabel(xlabel)
@@ -27,9 +28,21 @@ def savefig(filename):
 
 
 def q_random():
+    # Plotting 1g
+    with open("data/averages.dat") as f:
+        a = [float(i) for i in f.readlines()]
+    
+    plt.scatter([10, 100, 10000, 1000000], a)
+    plt.xscale('log')
+    plt.yscale('log')
+    add_plot_labels('Sample Size',
+                    'Deviation from 0.5',
+                    '')
+    savefig('figures/1g.png')
+
     # Plotting 1h
     with open("data/sumofrandnum1.dat") as f:
-        x1 = [float(i) for i in f.readlines()[:-1]]
+        x1 = [float(i) for i in f.readlines()]
 
     for bin_size in [0.5, 1, 2]:
         plt.hist(x1, np.arange(min(x1), max(x1), bin_size), density=True)
@@ -39,10 +52,10 @@ def q_random():
         savefig(f'figures/1h_dx_{str(bin_size).replace(".", "_")}.png')
 
     with open("data/sumofrandnum2.dat") as f:
-        x2 = [float(i) for i in f.readlines()[:-1]]
+        x2 = [float(i) for i in f.readlines()]
 
     with open("data/sumofrandnum3.dat") as f:
-        x3 = [float(i) for i in f.readlines()[:-1]]
+        x3 = [float(i) for i in f.readlines()]
 
     plt.hist(x2, np.arange(min(x2), max(x2), 1), density=True, alpha=0.5)
     plt.hist(x3, np.arange(min(x3), max(x3), 1), density=True, alpha=0.5)
