@@ -11,6 +11,10 @@ def fit_on_plot(a):
     return mu, sigma
 
 
+def make_bins(x, size):
+    return np.arange(min(x), max(x) + size, size)
+
+
 def add_plot_labels(xlabel, ylabel, title, fitx=None):
     if fitx:
         mu, sigma = fit_on_plot(fitx)
@@ -47,7 +51,7 @@ def q_random():
         x1 = [float(i) for i in f.readlines()]
 
     for bin_size in [0.5, 1, 2]:
-        plt.hist(x1, np.arange(min(x1), max(x1), bin_size), density=True)
+        plt.hist(x1, make_bins(x1, bin_size), density=True)
         add_plot_labels('Sum of 10000 random numbers in [0, 1]',
                         'Normalized count',
                         f'Bin Size = {bin_size}', x1)
@@ -59,8 +63,8 @@ def q_random():
     with open("data/sumofrandnum3.dat") as f:
         x3 = [float(i) for i in f.readlines()]
 
-    plt.hist(x2, np.arange(min(x2), max(x2), 1), density=True, alpha=0.5)
-    plt.hist(x3, np.arange(min(x3), max(x3), 1), density=True, alpha=0.5)
+    plt.hist(x2, make_bins(x2, 1), density=True, alpha=0.5)
+    plt.hist(x3, make_bins(x3, 1), density=True, alpha=0.5)
     add_plot_labels('Sum of 10000 random numbers in [-1, 1]',
                     'Normalized count',
                     'Distributions of different sample sizes')
@@ -74,16 +78,16 @@ def q_random_walks():
         x1 = [round(float(i)) for i in f.readlines()]
 
     for bin_size in [1, 2, 5, 10]:
-        plt.hist(x1, np.arange(min(x1), max(x1), bin_size), density=True)
+        plt.hist(x1, make_bins(x1, bin_size), density=True)
         add_plot_labels('Random walk of $10^4$ steps',
                         'Normalized count ($10^4$ walks)',
                         f'Bin Size = {bin_size}', x1)
         savefig(f'figures/1ij_dx_{bin_size}.png')
 
     plt.hist(x1, np.arange(min(x1) - min(x1) %
-             2, max(x1), 2), density=True, alpha=0.5)
+             2, max(x1) + 2, 2), density=True, alpha=0.5)
     plt.hist(x1, np.arange(min(x1) - min(x1) %
-             2 - 1, max(x1), 2), density=True, alpha=0.5)
+             2 - 1, max(x1) + 2, 2), density=True, alpha=0.5)
     add_plot_labels('Random walk of $10^4$ steps',
                     'Normalized count ($10^4$ walks)',
                     f'Bin Size = 2')
@@ -94,7 +98,7 @@ def q_random_walks():
     with open('data/randomwalk2.dat') as f:
         x2 = [round(float(i)) for i in f.readlines()]
 
-    plt.hist(x2, np.arange(min(x2), max(x2), 2), density=True)
+    plt.hist(x2, make_bins(x2, 2), density=True)
     add_plot_labels('Random walk of $10^4$ steps',
                     'Normalized count ($10^5$ walks)',
                     'Bin Size = 2', x2)
@@ -104,7 +108,7 @@ def q_random_walks():
     with open('data/randomwalk3.dat') as f:
         x3 = [round(float(i)) for i in f.readlines()]
 
-    plt.hist(x3, np.arange(min(x3), max(x3), 2), density=True)
+    plt.hist(x3, make_bins(x3, 2), density=True)
     add_plot_labels('Random walk of $10^5$ steps',
                     'Normalized count ($10^5$ walks)',
                     'Bin Size = 2', x3)
