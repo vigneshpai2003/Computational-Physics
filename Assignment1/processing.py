@@ -63,7 +63,7 @@ def q_random():
     with open("data/sumofrandnum3.dat") as f:
         x3 = [float(i) for i in f.readlines()]
 
-    plt.hist(x2, make_bins(x2, 1), density=True, alpha=0.5)
+    plt.hist(x2, make_bins(x2, 1), density=True)
     plt.hist(x3, make_bins(x3, 1), density=True, alpha=0.5)
     add_plot_labels('Sum of 10000 random numbers in [-1, 1]',
                     'Normalized count',
@@ -85,7 +85,7 @@ def q_random_walks():
         savefig(f'figures/1ij_dx_{bin_size}.png')
 
     plt.hist(x1, np.arange(min(x1) - min(x1) %
-             2, max(x1) + 2, 2), density=True, alpha=0.5)
+             2, max(x1) + 2, 2), density=True)
     plt.hist(x1, np.arange(min(x1) - min(x1) %
              2 - 1, max(x1) + 2, 2), density=True, alpha=0.5)
     add_plot_labels('Random walk of $10^4$ steps',
