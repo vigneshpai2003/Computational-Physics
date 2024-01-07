@@ -67,7 +67,7 @@ def q_random():
     plt.hist(x3, make_bins(x3, 1), density=True, alpha=0.5)
     add_plot_labels('Sum of 10000 random numbers in [-1, 1]',
                     'Normalized count',
-                    'Distributions of different sample sizes')
+                    'Distributions of different sample sizes', x3)
     plt.legend(['Sample Size = $10^4$', 'Sample Size = $10^5$'])
     savefig('figures/1h_sample.png')
 
