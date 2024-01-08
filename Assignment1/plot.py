@@ -33,12 +33,12 @@ def read_array(filename):
 
 
 def read_hist(foldername):
-    return read_array(f"{foldername}/x.dat"), read_array(f"{foldername}/y.dat")
+    return read_array(f"figure_data/{foldername}/x.dat"), read_array(f"figure_data/{foldername}/y.dat")
 
 
 # Plotting 1g
 y = read_array("averages.dat")
-x = [10, 100, 1000, 10000, 100000, 1000000]
+x = [100, 1000, 10000, 100000, 1000000]
 plt.scatter(x, y)
 plt.xscale('log')
 plt.yscale('log')

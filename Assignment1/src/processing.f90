@@ -1,6 +1,6 @@
 program process
     use, intrinsic :: iso_fortran_env, only: real32, real64
-    use utils
+    use hist, only: read_array, write_hist
     implicit none
 
     real(real64), allocatable :: x(:)
@@ -24,7 +24,7 @@ program process
     call write_hist('1ij_dx_2', x, minval(x), maxval(x) + 2.0d0, 2.0d0, .true.)
     call write_hist('1ij_dx_5', x, minval(x), maxval(x) + 5.0d0, 5.0d0, .true.)
     call write_hist('1ij_dx_10', x, minval(x), maxval(x) + 10.0d0, 10.0d0, .true.)
-    
+
     call write_hist('1ij_shifted_a', x, 0.0d0, 101.0d0, 2.0d0, .true.)
     call write_hist('1ij_shifted_b', x, 1.0d0, 102.0d0, 2.0d0, .true.)
     deallocate(x)

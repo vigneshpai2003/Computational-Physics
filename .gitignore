@@ -1,10 +1,15 @@
 venv/
 __pycache__
 
-data
-figures
-bin
-obj
+*.bin
+*.mod
+*.o
+
+Assignment1/bin
+Assignment1/modules
+Assignment1/obj
+Assignment1/data
+Assignment1/figures
 
 *.log
 *.aux

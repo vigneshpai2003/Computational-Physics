@@ -12,6 +12,8 @@ program assignment
 
     character(len=*), parameter :: myformat = "(F12.10)"
 
+    call execute_command_line('mkdir -p data')
+
     ! GET SEED SIZE AND SET A SEED
     call random_seed(seed_size)
     allocate(seed(seed_size))
@@ -82,7 +84,6 @@ program assignment
 
     ! store these in a file for analysis
     open(newunit=io, file="data/averages.dat")
-    write(io, *) abs(0.50d0 - avg(x))
     write(io, *) abs(0.50d0 - avg(xe2))
     write(io, *) abs(0.50d0 - avg(xe3))
     write(io, *) abs(0.50d0 - avg(xe4))
