@@ -5,11 +5,13 @@ utils = Compiler('modules/utils.f90')
 
 l0 = Linker('q0.bin', Compiler('0.f90'))
 l1 = Linker('q1.bin', utils, Compiler('1.f90'))
+lprocessing = Linker('processing.bin', utils, Compiler('processing.f90'))
 
 arg_map = {
     'build': lambda: (l0(), l1()),
     'run': lambda: (Executor(l0)(), Executor(l1)()),
-    'process': DataProcessor('processing.py'),
+    'process': Executor(lprocessing),
+    'plot': DataProcessor('plot.py'),
     'latex': LaTeXCompiler('submission'),
     'clean': Cleaner.clean,
 }
@@ -17,6 +19,7 @@ arg_map = {
 arg_map['all'] = lambda: (
     arg_map['run'](),
     arg_map['process'](),
+    arg_map['plot'](),
     arg_map['latex']()
 )
 

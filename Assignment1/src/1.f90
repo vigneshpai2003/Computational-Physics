@@ -1,9 +1,11 @@
 program assignment
+    use, intrinsic :: iso_fortran_env, only: real32, real64
     use utils
+
     implicit none
 
     ! DECLARE VARIABLE
-    real :: x(10), xe2(100), xe4(10000), xe5(100000), xe6(1000000), A(10, 10)
+    real(real64) :: x(10), xe2(100), xe3(1000), xe4(10000), xe5(100000), xe6(1000000), A(10, 10)
 
     integer, allocatable :: seed(:)
     integer :: seed_size, io, i
@@ -57,7 +59,9 @@ program assignment
 
     call random_number(x)
     call random_number(xe2)
+    call random_number(xe3)
     call random_number(xe4)
+    call random_number(xe5)
     call random_number(xe6)
 
     write(io, "(A)") "NOW calculating average of 10 random numbers"
@@ -80,7 +84,9 @@ program assignment
     open(newunit=io, file="data/averages.dat")
     write(io, *) abs(0.50d0 - avg(x))
     write(io, *) abs(0.50d0 - avg(xe2))
+    write(io, *) abs(0.50d0 - avg(xe3))
     write(io, *) abs(0.50d0 - avg(xe4))
+    write(io, *) abs(0.50d0 - avg(xe5))
     write(io, *) abs(0.50d0 - avg(xe6))
     close(io)
 
@@ -112,7 +118,7 @@ program assignment
     open(newunit=io, file="data/randomwalk1.dat")
     do i = 1, 10000
         call random_number(xe4)
-        write(io, *) sum(sign(1.0, xe4 - 0.5))
+        write(io, *) sum(sign(1.0d0, xe4 - 0.5))
     end do
     close(io)
 
@@ -120,7 +126,7 @@ program assignment
     open(newunit=io, file="data/randomwalk2.dat")
     do i = 1, 100000
         call random_number(xe4)
-        write(io, *) sum(sign(1.0, xe4 - 0.5))
+        write(io, *) sum(sign(1.0d0, xe4 - 0.5))
     end do
     close(io)
 
@@ -128,7 +134,7 @@ program assignment
     open(newunit=io, file="data/randomwalk3.dat")
     do i = 1, 100000
         call random_number(xe5)
-        write(io, *) sum(sign(1.0, xe5 - 0.5))
+        write(io, *) sum(sign(1.0d0, xe5 - 0.5))
     end do
     close(io)
 

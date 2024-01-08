@@ -1,5 +1,5 @@
 from __future__ import annotations
-from typing import Any, List
+from typing import Any, List, Union
 import subprocess
 from pathlib import Path
 import argparse
@@ -9,8 +9,16 @@ def make_shell_parser(arg_map):
     parser = argparse.ArgumentParser()
     parser.add_argument("commands", help="list of commands to execute",
                         nargs='+', choices=sorted(arg_map.keys()))
-    for i in parser.parse_args().commands:
-        arg_map[i]()
+    parser.add_argument(
+        '-i', '--ignore', help="ignore prerequisites", action='store_true')
+
+    args = parser.parse_args()
+
+    for i in args.commands:
+        if isinstance(arg_map[i], Command):
+            arg_map[i](ignore=args.ignore)
+        else:
+            arg_map[i]()
 
 
 OBJ_DIR = 'obj'
@@ -26,7 +34,8 @@ timer = '/usr/bin/time --format="\\n Executed in %e seconds with %P CPU"'
 
 VIRTUAL_ENV = 'venv/bin/python3'
 
-def run_shell(command: str, show=False):
+
+def sh(command: str, show=False):
     if show:
         print(command)
     subprocess.run([command], shell=True)
@@ -57,7 +66,14 @@ def needs_rebuild(out_files: List[Path], in_files: List[Path]) -> bool:
 
 
 def make_containing_folder(path: str):
-    run_shell(f"mkdir -p {'/'.join(path.split('/')[:-1])}")
+    sh(f"mkdir -p {'/'.join(path.split('/')[:-1])}")
+
+
+def files_in(folder: Union[str, Path], recursive=False):
+    if recursive:
+        return [x for x in Path(folder).glob('**/*') if x.is_file()]
+    else:
+        return list(Path(folder).iterdir())
 
 
 class Command:
@@ -75,7 +91,7 @@ class Command:
             command.run()
 
         try:
-            if not ignore and self.prerequisite():
+            if ignore or (not ignore and self.prerequisite()):
                 self.action()
                 print('')
         except:
@@ -95,10 +111,13 @@ class Compiler(Command):
     def action(self):
         print(f"🛠️  Compiling: {self.source}")
         make_containing_folder(self.obj)
-        run_shell(f"gfortran -J{OBJ_DIR} -o {self.obj} -c {self.source}")
+        sh(f"gfortran -J{OBJ_DIR} -o {self.obj} -c {self.source}")
 
     def prerequisite(self):
-        return needs_rebuild([Path(self.obj)], [Path(self.source)])
+        return needs_rebuild(
+            [Path(self.obj)],
+            [Path(self.source)]
+        )
 
 
 class Linker(Command):
@@ -111,10 +130,13 @@ class Linker(Command):
     def action(self):
         print(f"⛓️  Linking: {' '.join(self.objs)}")
         make_containing_folder(self.bin)
-        run_shell(f"gfortran -o {self.bin} {' '.join(self.objs)}")
+        sh(f"gfortran -o {self.bin} {' '.join(self.objs)}")
 
     def prerequisite(self):
-        return needs_rebuild([Path(self.bin)], [Path(obj) for obj in self.objs])
+        return needs_rebuild(
+            [Path(self.bin)],
+            [Path(obj) for obj in self.objs]
+        )
 
 
 class Executor(Command):
@@ -125,8 +147,8 @@ class Executor(Command):
 
     def action(self):
         print(f'\033[92m ▶\033[00m Running: {self.bin}')
-        run_shell(f"mkdir -p {DATA_DIR}")
-        run_shell(f"{timer} ./{self.bin}")
+        sh(f"mkdir -p {DATA_DIR}")
+        sh(f"{timer} ./{self.bin}")
 
 
 class DataProcessor(Command):
@@ -135,41 +157,44 @@ class DataProcessor(Command):
         self.source = source
 
     def action(self):
-        run_shell(f'mkdir -p {FIG_DIR}')
+        sh(f'mkdir -p {FIG_DIR}')
         print(f"🌊 Processing Data: {self.source}")
-        run_shell(f'{timer} ../{VIRTUAL_ENV} {self.source}')
+        sh(f'{timer} ../{VIRTUAL_ENV} {self.source}')
 
     def prerequisite(self) -> bool:
-        return needs_rebuild(Path(FIG_DIR).iterdir(), Path(DATA_DIR).iterdir())
+        return needs_rebuild(
+            files_in(FIG_DIR, True),
+            [Path(self.source)] + files_in(DATA_DIR, True)
+        )
 
 
 class LaTeXCompiler(Command):
-    def __init__(self, source: str):
+    def __init__(self, name: str):
         super().__init__()
-        self.source = source
+        self.name = name
+        self.latex_command = 'pdflatex -halt-on-error -interaction=nonstopmode -file-line-error'
 
     def action(self):
-        print(f"📜 Compiling LaTeX: {self.source}.tex")
-        run_shell(
-            f'cd {TEX_DIR} && pdflatex -halt-on-error -interaction=nonstopmode -file-line-error {self.source}.tex 1>/dev/null')
+        print(f"📜 Compiling LaTeX: {self.name}.tex")
+        sh(f'cd {TEX_DIR} && {self.latex_command} {self.name}.tex 1>/dev/null')
 
     def prerequisite(self) -> bool:
-        return needs_rebuild([Path(f'{TEX_DIR}/{self.source}.pdf')], [Path(f'{TEX_DIR}/{self.source}.tex'), *Path(FIG_DIR).iterdir()])
+        return needs_rebuild([Path(f'{TEX_DIR}/{self.name}.pdf')],
+                             [Path(f'{TEX_DIR}/{self.name}.tex')] + files_in(FIG_DIR, True))
 
 
 class Cleaner:
     def clean_build():
-        run_shell(f'rm -rf {OBJ_DIR} {BIN_DIR}')
+        sh(f'rm -rf {OBJ_DIR} {BIN_DIR}')
 
     def clean_latex():
-        run_shell(
-            f'cd {TEX_DIR} && rm -rf *.pdf *.aux *.fdb_latexmk *.fls *.log *.gz')
+        sh(f'cd {TEX_DIR} && rm -rf *.pdf *.aux *.fdb_latexmk *.fls *.log *.gz')
 
     def clean_data():
-        run_shell(f'rm -rf {DATA_DIR}')
+        sh(f'rm -rf {DATA_DIR}')
 
     def clean_figures():
-        run_shell(f'rm -rf figures')
+        sh(f'rm -rf figures')
 
     def clean():
         print("🔥 CLEANING")
