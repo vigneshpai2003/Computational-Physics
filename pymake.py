@@ -2,17 +2,20 @@
 pymake.py is a module for automation of tasks, with support for fortran builds, in python
 """
 from __future__ import annotations
-from typing import Any, List, Union
+from typing import Any, List, Union, Dict, Callable
 import subprocess
 from pathlib import Path
 import argparse
-from colorama import Fore, Back, Style
+from colorama import Fore, Style
 
 
 timer = '/usr/bin/time --format="\\n Executed in %e seconds with %P CPU"'
 
 
-def make_shell_parser(arg_map):
+def make_shell_parser(arg_map: Dict[str, Callable[[], Any]]):
+    """
+    Converts the python file into a terminal application with the commands in arg_map
+    """
     parser = argparse.ArgumentParser()
     parser.add_argument("commands", help="list of commands to execute",
                         nargs='+', choices=sorted(arg_map.keys()))
@@ -31,6 +34,7 @@ def make_shell_parser(arg_map):
 def sh(command: str, show=False):
     """
     runs a shell command using subprocess
+    - show: whether to print the command
     """
     if show:
         print(command)
@@ -94,24 +98,29 @@ def files_in(folder: Union[str, Path], recursive=False):
         return list(Path(folder).iterdir())
 
 
-_arrow = f"==>"
-
-
 class Logger:
+    arrow = f"==>"
+    reset = f"{Style.RESET_ALL}"
+
     def fortran_compile_start(compiler: FortranCompiler):
-        print(f"🛠️  Compiling: {Style.DIM}{compiler.source}{Style.NORMAL} {_arrow} {Fore.BLUE}{compiler.obj}{Fore.RESET}")
+        print(
+            f"🛠️  Compiling: {Style.DIM}{compiler.source}{Logger.reset} {Logger.arrow} {Fore.BLUE}{compiler.obj}{Logger.reset}\n")
 
     def fortran_linker_start(linker: FortranLinker):
-        print(f"⛓️  Linking: {Fore.BLUE}{' '.join(linker.objs)}{Fore.RESET} {_arrow} {Fore.RED}{linker.bin}{Fore.RESET}")
-    
+        print(
+            f"⛓️  Linking: {Fore.BLUE}{' '.join(linker.objs)}{Logger.reset} {Logger.arrow} {Fore.RED}{linker.bin}{Logger.reset}\n")
+
     def fortran_execute_start(executor: FortranExecutor):
-        print(f'\033[92m ▶\033[00m Running: {Fore.RED}{executor.bin}{Fore.RESET}')
+        print(
+            f'\033[92m ▶\033[00m Running: {Fore.RED}{executor.bin}{Logger.reset}\n')
 
     def latex_compiler_start(compiler: LaTeXCompiler):
-        print(f"📜 Compiling LaTeX: {Style.DIM}{compiler.filename}{Style.NORMAL} {_arrow} {Fore.GREEN}{compiler.pdfname}{Fore.RESET}")
+        print(
+            f"📜 Compiling LaTeX: {Style.DIM}{compiler.filename}{Logger.reset} {Logger.arrow} {Fore.GREEN}{compiler.pdfname}{Logger.reset}\n")
 
     def python_start(script: PythonScript):
-        print(f"🐍 Running Python Script: {Style.DIM}{script.source}{Style.NORMAL}")
+        print(
+            f"🐍 Running Python Script: {Style.DIM}{script.source}{Logger.reset}\n")
 
 
 class Command:
@@ -279,7 +288,8 @@ class LaTeXCompiler(Command):
 
         # flags
         self.flags = []
-        self.add_flags('-halt-on-error', '-interaction=nonstopmode', '-file-line-error')
+        self.add_flags('-halt-on-error',
+                       '-interaction=nonstopmode', '-file-line-error')
 
     def add_flags(self, *flags: List[str]):
         self.flags.extend(flags)
