@@ -69,7 +69,8 @@ def make_containing_folder(path: str):
     """
     makes the containing folder of a file
     """
-    sh(f"mkdir -p {'/'.join(path.split('/')[:-1])}")
+    if '/' in path:
+        sh(f"mkdir -p {'/'.join(path.split('/')[:-1])}")
 
 
 def files_in(folder: Union[str, Path], recursive=False):
