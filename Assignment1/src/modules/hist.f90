@@ -1,10 +1,10 @@
 module hist
     use, intrinsic :: iso_fortran_env, only: real32, real64
-    use utils, only: write_array
+    use utils, only: write_array, read_array
     implicit none
 
     private
-    public write_hist, read_array
+    public write_hist
 contains
 
     subroutine write_hist(name, x, a, b, step, density)
@@ -48,32 +48,6 @@ contains
 
         deallocate(bin_mid)
         deallocate(count)
-    end subroutine
-
-    subroutine read_array(xfile, x)
-        character(*), intent(in) :: xfile
-        real(real64), allocatable, intent(out) :: x(:)
-
-        integer :: io, nlines, iostat, i
-
-        ! calculate number of lines in file
-        nlines = 0
-        open(newunit=io, file='data/'//xfile, status="old")
-        do
-            read(io, *, iostat=iostat)
-            if (iostat/=0) exit
-            nlines = nlines + 1
-        end do
-        close(io)
-
-        allocate(x(nlines))
-
-        ! read into x
-        open(newunit=io, file="data/"//xfile, status="old")
-        do i = 1, nlines
-            read(io, *) x(i)
-        end do
-        close(io)
     end subroutine
 
 end module hist

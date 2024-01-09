@@ -161,6 +161,7 @@ class Compiler(Command):
             lambda: make_containing_folder(self.obj),
             lambda: sh(f'mkdir -p {self.MOD_DIR}')
         )
+        self.add_modules = self.add_dependencies
 
     def action(self):
         sh(f"gfortran -J{self.MOD_DIR} -o {self.obj} -c {self.source}")

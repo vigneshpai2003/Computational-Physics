@@ -1,6 +1,7 @@
 program process
     use, intrinsic :: iso_fortran_env, only: real32, real64
-    use hist, only: read_array, write_hist
+    use hist, only: write_hist
+    use utils, only: read_array
     implicit none
 
     real(real64), allocatable :: x(:)

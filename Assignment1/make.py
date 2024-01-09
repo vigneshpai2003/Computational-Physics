@@ -1,21 +1,23 @@
 #!/usr/bin/env python3
 from pymake import *
 
-# compilers and linkers
-# modules
+#  compilers and linkers
 utils = Compiler('src/modules/utils.f90', 'obj/modules/utils.o')
 hist = Compiler('src/modules/hist.f90', 'obj/modules/hist.o')
+hist.add_modules(utils)
 
-l0 = Linker('bin/q0.bin', Compiler('src/0.f90', 'obj/0.o'))
+f0 = Compiler('src/0.f90', 'obj/0.o')
+f1 = Compiler('src/1.f90', 'obj/1.o')
+f1.add_modules(utils)
 
-l1 = Linker('bin/q1.bin',
-            utils,
-            Compiler('src/1.f90', 'obj/1.o'))
+l0 = Linker('bin/q0.bin', f0)
+l1 = Linker('bin/q1.bin', f1, utils)
 
 # post processing with fortran
-f_postprocessor = Executor(Linker('bin/processing.bin',
-                                  utils, hist,
-                                  Compiler('src/processing.f90', 'obj/processing.o')))
+fp = Compiler('src/processing.f90', 'obj/processing.o')
+fp.add_modules(hist)
+
+f_postprocessor = Executor(Linker('bin/processing.bin', fp, hist, utils))
 f_postprocessor.add_prerequisites(lambda: needs_rebuild(
     files_in('data/figure_data', True),
     files_in('data')
