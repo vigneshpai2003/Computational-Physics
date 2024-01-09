@@ -175,7 +175,7 @@ class Command:
 class FortranCompiler(Command):
     MOD_DIR = 'modules'
 
-    def __init__(self, source: str, obj: str, MOD_DIR=MOD_DIR):
+    def __init__(self, source: str, obj: str):
         """
         Command to compile a source file into an object file
         - source: the file to compile
@@ -185,7 +185,6 @@ class FortranCompiler(Command):
         super().__init__()
         self.source = source
         self.obj = obj
-        self.MOD_DIR = MOD_DIR
 
         self.add_modules = self.add_dependencies
 

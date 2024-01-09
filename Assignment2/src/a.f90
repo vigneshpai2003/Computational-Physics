@@ -1,6 +1,6 @@
 function f(x) result(y)
-    real*8, intent(in) :: x
-    real*8 :: y
+    real(8), intent(in) :: x
+    real(8) :: y
 
     y = x**2
 end function
