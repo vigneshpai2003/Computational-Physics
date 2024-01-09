@@ -1,23 +1,24 @@
 #!/usr/bin/env python3
+import sys; sys.path.append('../')
 from pymake import *
 
 #  compilers and linkers
-utils = Compiler('src/modules/utils.f90', 'obj/modules/utils.o')
-hist = Compiler('src/modules/hist.f90', 'obj/modules/hist.o')
+utils = FortranCompiler('src/modules/utils.f90', 'obj/modules/utils.o')
+hist = FortranCompiler('src/modules/hist.f90', 'obj/modules/hist.o')
 hist.add_modules(utils)
 
-f0 = Compiler('src/0.f90', 'obj/0.o')
-f1 = Compiler('src/1.f90', 'obj/1.o')
+f0 = FortranCompiler('src/0.f90', 'obj/0.o')
+f1 = FortranCompiler('src/1.f90', 'obj/1.o')
 f1.add_modules(utils)
 
-l0 = Linker('bin/q0.bin', f0)
-l1 = Linker('bin/q1.bin', f1, utils)
+l0 = FortranLinker('bin/q0.bin', f0)
+l1 = FortranLinker('bin/q1.bin', f1, utils)
 
 # post processing with fortran
-fp = Compiler('src/processing.f90', 'obj/processing.o')
+fp = FortranCompiler('src/processing.f90', 'obj/processing.o')
 fp.add_modules(hist)
 
-f_postprocessor = Executor(Linker('bin/processing.bin', fp, hist, utils))
+f_postprocessor = FortranExecutor(FortranLinker('bin/processing.bin', fp, hist, utils))
 f_postprocessor.add_prerequisites(lambda: needs_rebuild(
     files_in('data/figure_data', True),
     files_in('data')
@@ -42,13 +43,13 @@ latex.add_prerequisites(lambda: needs_rebuild(
 
 arg_map = {
     'build': lambda: (l0(), l1()),
-    'run': lambda: (Executor(l0)(), Executor(l1)()),
+    'run': lambda: (FortranExecutor(l0)(), FortranExecutor(l1)()),
     'process': f_postprocessor,
     'plot': py_postprocessor,
     'latex': latex,
     'clean': lambda: (
         print("🔥 CLEANING"),
-        sh(f'rm -rf obj bin modules'),
+        sh(f'rm -rf obj bin {FortranCompiler.MOD_DIR}'),
         sh(f'cd tex && rm -rf *.pdf *.aux *.fdb_latexmk *.fls *.log *.gz'),
         sh(f'rm -rf data'),
         sh(f'rm -rf figures'),

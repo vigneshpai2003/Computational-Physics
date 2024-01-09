@@ -1,11 +1,12 @@
+"""
+pymake.py is a module for automation of tasks, with support for fortran builds, in python
+"""
 from __future__ import annotations
 from typing import Any, List, Union
 import subprocess
 from pathlib import Path
 import argparse
 
-
-MOD_DIR = 'modules'
 
 timer = '/usr/bin/time --format="\\n Executed in %e seconds with %P CPU"'
 
@@ -141,7 +142,9 @@ class Command:
         self.run(*args, **kwds)
 
 
-class Compiler(Command):
+class FortranCompiler(Command):
+    MOD_DIR = 'modules'
+
     def __init__(self, source: str, obj: str, MOD_DIR=MOD_DIR):
         """
         Command to compile a source file into an object file
@@ -168,8 +171,8 @@ class Compiler(Command):
         sh(f"gfortran -J{self.MOD_DIR} -o {self.obj} -c {self.source}")
 
 
-class Linker(Command):
-    def __init__(self, bin, *compilers: List[Compiler]):
+class FortranLinker(Command):
+    def __init__(self, bin, *compilers: List[FortranCompiler]):
         """
         Command to link object files made by compilers into a binary
         - bin: the binary file to make
@@ -192,7 +195,7 @@ class Linker(Command):
         sh(f"gfortran -o {self.bin} {' '.join(self.objs)}")
 
 
-class Executor(Command):
+class FortranExecutor(Command):
     def __init__(self, linker):
         """
         Executes the binary made by 'linker'

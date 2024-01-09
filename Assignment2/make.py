@@ -1,18 +1,19 @@
 #!/usr/bin/env python3
+import sys; sys.path.append('../')
 from pymake import *
 
-utils = Compiler('src/modules/utils.f90', 'obj/modules/utils.o')
+utils = FortranCompiler('src/modules/utils.f90', 'obj/modules/utils.o')
 
-a = Compiler('src/a.f90', 'obj/a.o')
+a = FortranCompiler('src/a.f90', 'obj/a.o')
 a.add_modules(utils)
 
-la = Linker('bin/a.bin', a, utils)
+la = FortranLinker('bin/a.bin', a, utils)
 
 arg_map = {
-    'a': Executor(la),
+    'a': FortranExecutor(la),
     'clean': lambda : (
         print('🔥 CLEANING'),
-        sh('rm -rf bin obj modules', True)
+        sh(f'rm -rf bin obj {FortranCompiler.MOD_DIR}', True)
     ),
 }
 
