@@ -6,6 +6,7 @@ from typing import Any, List, Union
 import subprocess
 from pathlib import Path
 import argparse
+from colorama import Fore, Back, Style
 
 
 timer = '/usr/bin/time --format="\\n Executed in %e seconds with %P CPU"'
@@ -66,12 +67,21 @@ def needs_rebuild(out_files: List[Path], in_files: List[Path]) -> bool:
     return False
 
 
-def make_containing_folder(path: str):
+def mkdir(*folders: List[str]):
+    """
+    makes folders
+    """
+    folders = [folder for folder in folders if folder.strip()]
+
+    if folders:
+        sh(f"mkdir -p {' '.join(folders)}")
+
+
+def mkdirof(path: str):
     """
     makes the containing folder of a file
     """
-    if '/' in path:
-        sh(f"mkdir -p {'/'.join(path.split('/')[:-1])}")
+    mkdir('/'.join(path.split('/')[:-1]))
 
 
 def files_in(folder: Union[str, Path], recursive=False):
@@ -82,6 +92,26 @@ def files_in(folder: Union[str, Path], recursive=False):
         return [x for x in Path(folder).glob('**/*') if x.is_file()]
     else:
         return list(Path(folder).iterdir())
+
+
+_arrow = f"==>"
+
+
+class Logger:
+    def fortran_compile_start(compiler: FortranCompiler):
+        print(f"🛠️  Compiling: {Style.DIM}{compiler.source}{Style.NORMAL} {_arrow} {Fore.BLUE}{compiler.obj}{Fore.RESET}")
+
+    def fortran_linker_start(linker: FortranLinker):
+        print(f"⛓️  Linking: {Fore.BLUE}{' '.join(linker.objs)}{Fore.RESET} {_arrow} {Fore.RED}{linker.bin}{Fore.RESET}")
+    
+    def fortran_execute_start(executor: FortranExecutor):
+        print(f'\033[92m ▶\033[00m Running: {Fore.RED}{executor.bin}{Fore.RESET}')
+
+    def latex_compiler_start(compiler: LaTeXCompiler):
+        print(f"📜 Compiling LaTeX: {Style.DIM}{compiler.filename}{Style.NORMAL} {_arrow} {Fore.GREEN}{compiler.pdfname}{Fore.RESET}")
+
+    def python_start(script: PythonScript):
+        print(f"🐍 Running Python Script: {Style.DIM}{script.source}{Style.NORMAL}")
 
 
 class Command:
@@ -156,19 +186,31 @@ class FortranCompiler(Command):
         self.source = source
         self.obj = obj
         self.MOD_DIR = MOD_DIR
+
+        self.add_modules = self.add_dependencies
+
+        # rebuild obj only if source is changed
         self.add_prerequisites(lambda: needs_rebuild(
             [Path(self.obj)],
             [Path(self.source)]
         ))
+
+        # precompile steps
         self.add_preruns(
-            lambda: print(f"🛠️  Compiling: {self.source}"),
-            lambda: make_containing_folder(self.obj),
-            lambda: sh(f'mkdir -p {self.MOD_DIR}')
+            lambda: Logger.fortran_compile_start(self),
+            lambda: mkdirof(self.obj),
+            lambda: mkdir(self.MOD_DIR)
         )
-        self.add_modules = self.add_dependencies
+
+        # flags
+        self.flags = []
+        self.add_flags(f'-J{self.MOD_DIR}')
+
+    def add_flags(self, *flags: List[str]):
+        self.flags.extend(flags)
 
     def action(self):
-        sh(f"gfortran -J{self.MOD_DIR} -o {self.obj} -c {self.source}")
+        sh(f"gfortran {' '.join(self.flags)} -o {self.obj} -c {self.source}")
 
 
 class FortranLinker(Command):
@@ -182,17 +224,27 @@ class FortranLinker(Command):
         self.add_dependencies(*compilers)
         self.objs = [compiler.obj for compiler in compilers]
         self.bin = bin
+
+        # rebuild only if object files changed
         self.add_prerequisites(lambda: needs_rebuild(
             [Path(self.bin)],
             [Path(obj) for obj in self.objs]
         ))
+
+        # prelink steps
         self.add_preruns(
-            lambda: print(f"⛓️  Linking: {' '.join(self.objs)}"),
-            lambda: make_containing_folder(self.bin)
+            lambda: Logger.fortran_linker_start(self),
+            lambda: mkdirof(self.bin)
         )
 
+        # flags
+        self.flags = []
+
+    def add_flags(self, *flags: List[str]):
+        self.flags.extend(flags)
+
     def action(self):
-        sh(f"gfortran -o {self.bin} {' '.join(self.objs)}")
+        sh(f"gfortran {' '.join(self.flags)} -o {self.bin} {' '.join(self.objs)}")
 
 
 class FortranExecutor(Command):
@@ -204,7 +256,7 @@ class FortranExecutor(Command):
         self.add_dependencies(linker)
         self.bin = linker.bin
         self.add_preruns(
-            lambda: print(f'\033[92m ▶\033[00m Running: {self.bin}')
+            lambda: Logger.fortran_execute_start(self)
         )
 
     def action(self):
@@ -222,13 +274,19 @@ class LaTeXCompiler(Command):
         self.folder = folder
         self.filename = filename
         self.pdfname = filename.replace('tex', 'pdf')
-        self.latex_command = 'pdflatex -halt-on-error -interaction=nonstopmode -file-line-error'
         self.add_preruns(
-            lambda: print(f"📜 Compiling LaTeX: {self.filename}")
+            lambda: Logger.latex_compiler_start(self)
         )
 
+        # flags
+        self.flags = []
+        self.add_flags('-halt-on-error', '-interaction=nonstopmode', '-file-line-error')
+
+    def add_flags(self, *flags: List[str]):
+        self.flags.extend(flags)
+
     def action(self):
-        sh(f'cd {self.folder} && {self.latex_command} {self.filename} 1>/dev/null')
+        sh(f'cd {self.folder} && pdflatex {" ".join(self.flags)} {self.filename} 1>/dev/null')
 
 
 class PythonScript(Command):
@@ -242,7 +300,7 @@ class PythonScript(Command):
         self.source = source
         self.python = python
         self.add_preruns(
-            lambda: print(f"🐍 Running Python Script: {self.source}")
+            lambda: Logger.python_start(self)
         )
 
     def action(self):

@@ -31,7 +31,7 @@ py_postprocessor.add_prerequisites(lambda: needs_rebuild(
     [Path(py_postprocessor.source)] + files_in('data', True)
 ))
 py_postprocessor.add_preruns(
-    lambda: sh('mkdir -p figures')
+    lambda: mkdir('figures')
 )
 
 # latex compiler

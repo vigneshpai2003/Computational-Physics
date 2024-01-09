@@ -13,7 +13,8 @@ arg_map = {
     'a': FortranExecutor(la),
     'clean': lambda : (
         print('🔥 CLEANING'),
-        sh(f'rm -rf bin obj {FortranCompiler.MOD_DIR}', True)
+        sh(f'rm -rf bin obj {FortranCompiler.MOD_DIR}'),
+        print('')
     ),
 }
 
