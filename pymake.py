@@ -209,7 +209,7 @@ class FortranCompiler(Command):
         self.source = source
         self.obj = obj
 
-        self.modules = []
+        self.linker_modules = []
 
         # rebuild obj only if source is changed
         self.add_prerequisites(lambda: needs_rebuild(
@@ -228,12 +228,13 @@ class FortranCompiler(Command):
         self.flags = []
         self.add_flags(f'-J{self.MOD_DIR}')
 
-    def add_modules(self, *module_compilers: FortranCompiler):
+    def add_modules(self, *module_compilers: FortranCompiler, remember=True):
         """
-        - module_compilers: sequence of compilers of modules that this fortran file uses, these modules are remembered when linking
+        - module_compilers: sequence of compilers of modules that this fortran file uses, these modules are remembered when linking by default
         """
         self.add_dependencies(*module_compilers)
-        self.modules.extend(module_compilers)
+        if remember:
+            self.linker_modules.extend(module_compilers)
 
     def add_flags(self, *flags: str):
         self.flags.extend(flags)
@@ -255,9 +256,9 @@ class FortranLinker(Command):
         objs = [compiler.obj for compiler in compilers]
         
         for compiler in compilers:
-            objs.extend([module.obj for module in compiler.modules])
+            objs.extend([module.obj for module in compiler.linker_modules])
 
-        # remove duplicates
+        # remove duplicate objs
         self.objs = []
         for obj in objs:
             if not obj in self.objs:
