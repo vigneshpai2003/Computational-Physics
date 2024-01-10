@@ -16,7 +16,9 @@ l5 = FortranLinker('bin/5.bin', q5, integrate)
 
 # fortran file to run random stuff
 scratch = FortranCompiler('src/scratch.f90', 'obj/scratch.o')
-lscratch = FortranLinker('bin/scratch.bin', scratch)
+scratch.add_modules(integrate)
+
+lscratch = FortranLinker('bin/scratch.bin', scratch, integrate)
 
 commands = {
     '1': FortranExecutor(l1),

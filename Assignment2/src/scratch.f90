@@ -1,11 +1,19 @@
+function f(x) result(y)
+    real(8), intent(in) :: x(:)
+    real(8) :: y
+
+    y = x(1)**4
+end function
+
+
 program scratch
+    use integrate
     implicit none
 
-    integer :: x(3), n(3)
+    procedure(integrable_function) :: f
+    real(8) :: s
 
-    x = [1, 2, 1]
-    n = [3, 3, 3]
-
-    print *, count(mod(x, n)==0)
+    print *, simpson(1, f, [0.0d0], [1.0d0], N=[12])
+    print *, simpson2(1, f, [0.0d0], [1.0d0], N=[12])
 
 end program scratch

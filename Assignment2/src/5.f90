@@ -19,9 +19,9 @@ program assignment
     use integrate
 
     implicit none
-    
+
     procedure(integrable_function) :: g, g2
-    
+
     real(8) :: a(6), b(6)
     integer :: N(6)
 
@@ -29,5 +29,7 @@ program assignment
     b = pi / 2 - 0.001
     N = 20
 
-    print *, trapezoidal(6, g2, a, b, N=N)
+    print *, N(1), 'trapezoidal: ', trapezoidal(6, g2, a, b, N=N)
+    print *, N(1), 'simpson: ', simpson(6, g2, a, b, N=N)
+
 end program assignment
