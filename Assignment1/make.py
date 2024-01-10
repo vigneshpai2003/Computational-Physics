@@ -37,31 +37,25 @@ py_postprocessor.add_preruns(
 # latex compiler
 latex = LaTeXCompiler('tex', 'submission.tex')
 latex.add_prerequisites(lambda: needs_rebuild(
-    [Path(latex.pdfname)],
-    [Path(latex.filename)] + files_in('figures', True)
+    [Path(latex.pdf)],
+    [Path(latex.file)] + files_in('figures', True)
 ))
 
 arg_map = {
-    'build': lambda: (l0(), l1()),
-    'run': lambda: (FortranExecutor(l0)(), FortranExecutor(l1)()),
+    'all': ('run', 'process', 'plot', 'latex'),
+    'build': (l0, l1),
+    'run': (FortranExecutor(l0), FortranExecutor(l1)),
     'process': f_postprocessor,
     'plot': py_postprocessor,
     'latex': latex,
     'clean': lambda: (
         print("🔥 CLEANING"),
         sh(f'rm -rf obj bin {FortranCompiler.MOD_DIR}'),
-        sh(f'cd tex && rm -rf *.pdf *.aux *.fdb_latexmk *.fls *.log *.gz'),
+        sh(f'cd tex && rm -rf *.aux *.fdb_latexmk *.fls *.log *.gz'),
         sh(f'rm -rf data'),
         sh(f'rm -rf figures'),
         print('')
     ),
 }
-
-arg_map['all'] = lambda: (
-    arg_map['run'](),
-    arg_map['process'](),
-    arg_map['plot'](),
-    arg_map['latex']()
-)
 
 make_shell_parser(arg_map)

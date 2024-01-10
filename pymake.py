@@ -12,7 +12,24 @@ from colorama import Fore, Style
 timer = '/usr/bin/time --format="\\n Executed in %e seconds with %P CPU"'
 
 
-def make_shell_parser(arg_map: Dict[str, Callable[[], Any]]):
+def run_arg(arg_map, arg, ignore):
+    if callable(arg):
+        if isinstance(arg, Command):
+            arg(ignore=ignore)
+        else:
+            arg()
+        return
+
+    command = arg_map[arg]
+
+    if isinstance(command, (list, tuple)):
+        for i in command:
+            run_arg(arg_map, i, ignore)
+    else:
+        run_arg(arg_map, command, ignore)
+
+
+def make_shell_parser(arg_map: Dict[str, Any]):
     """
     Converts the python file into a terminal application with the commands in arg_map
     """
@@ -25,10 +42,7 @@ def make_shell_parser(arg_map: Dict[str, Callable[[], Any]]):
     args = parser.parse_args()
 
     for i in args.commands:
-        if isinstance(arg_map[i], Command):
-            arg_map[i](ignore=args.ignore)
-        else:
-            arg_map[i]()
+        run_arg(arg_map, i, args.ignore)
 
 
 def sh(command: str, show=False):
@@ -282,6 +296,10 @@ class LaTeXCompiler(Command):
         self.folder = folder
         self.filename = filename
         self.pdfname = filename.replace('tex', 'pdf')
+
+        self.file = f'{self.folder}/{self.filename}'
+        self.pdf = f'{self.folder}/{self.pdfname}'
+
         self.add_preruns(
             lambda: Logger.latex_compiler_start(self)
         )
