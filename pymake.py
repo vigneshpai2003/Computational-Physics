@@ -85,7 +85,7 @@ def needs_rebuild(out_files: List[Path], in_files: List[Path]) -> bool:
     return False
 
 
-def mkdir(*folders: List[str]):
+def mkdir(*folders: str):
     """
     makes folders
     """
@@ -209,7 +209,7 @@ class FortranCompiler(Command):
         self.source = source
         self.obj = obj
 
-        self.add_modules = self.add_dependencies
+        self.modules = []
 
         # rebuild obj only if source is changed
         self.add_prerequisites(lambda: needs_rebuild(
@@ -228,7 +228,14 @@ class FortranCompiler(Command):
         self.flags = []
         self.add_flags(f'-J{self.MOD_DIR}')
 
-    def add_flags(self, *flags: List[str]):
+    def add_modules(self, *module_compilers: FortranCompiler):
+        """
+        - module_compilers: sequence of compilers of modules that this fortran file uses, these modules are remembered when linking
+        """
+        self.add_dependencies(*module_compilers)
+        self.modules.extend(module_compilers)
+
+    def add_flags(self, *flags: str):
         self.flags.extend(flags)
 
     def action(self):
@@ -236,7 +243,7 @@ class FortranCompiler(Command):
 
 
 class FortranLinker(Command):
-    def __init__(self, bin, *compilers: List[FortranCompiler]):
+    def __init__(self, bin, *compilers: FortranCompiler):
         """
         Command to link object files made by compilers into a binary
         - bin: the binary file to make
@@ -244,7 +251,18 @@ class FortranLinker(Command):
         """
         super().__init__()
         self.add_dependencies(*compilers)
-        self.objs = [compiler.obj for compiler in compilers]
+        
+        objs = [compiler.obj for compiler in compilers]
+        
+        for compiler in compilers:
+            objs.extend([module.obj for module in compiler.modules])
+
+        # remove duplicates
+        self.objs = []
+        for obj in objs:
+            if not obj in self.objs:
+                self.objs.append(obj)
+
         self.bin = bin
 
         # rebuild only if object files changed
@@ -262,7 +280,7 @@ class FortranLinker(Command):
         # flags
         self.flags = []
 
-    def add_flags(self, *flags: List[str]):
+    def add_flags(self, *flags: str):
         self.flags.extend(flags)
 
     def action(self):
@@ -309,7 +327,7 @@ class LaTeXCompiler(Command):
         self.add_flags('-halt-on-error',
                        '-interaction=nonstopmode', '-file-line-error')
 
-    def add_flags(self, *flags: List[str]):
+    def add_flags(self, *flags: str):
         self.flags.extend(flags)
 
     def action(self):
