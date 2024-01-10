@@ -1,49 +1,42 @@
 function f(x) result(y)
-    real(8), intent(in) :: x
+    real(8), intent(in) :: x(:)
     real(8) :: y
 
-    y = 4 / (1 + x**2)
+    y = 4 / (1 + (x(1))**2)
 end function
 
 function fsin(x) result(y)
-    real(8), intent(in) :: x
+    real(8), intent(in) :: x(:)
     real(8) :: y
 
-    y = sin(x)
+    y = sin(x(1))
 end function
 
 function fgauss(x) result(y)
-    use utils
+    use integrate, only: pi
 
-    real(8), intent(in) :: x
+    real(8), intent(in) :: x(:)
     real(8) :: y
 
-    y = exp(-0.5 * x**2) / sqrt(2 * pi)
+    y = exp(-0.5 * x(1)**2) / sqrt(2 * pi)
 end function
 
-function g(x) result(z)
-    real(8), intent(in) :: x(6)
-    real(8) :: z
-
-    z = exp(- norm2(x)**2 - 0.5 * ((x(1) - x(4))**2 + (x(2) - x(5))**2 + (x(3) - x(6))**2))
-end function
-
-program hello
-    use utils
+program assignment
+    use integrate
 
     implicit none
 
-    real(8) :: err, dx
-    integer :: i, io1, io2
+    real(8) :: err, dx, res, a(6), b(6)
+    integer :: i, io1, io2, N(6)
 
     procedure(integrable_function) :: f, fsin, fgauss
-    procedure(integrable_function_ndim) :: g
 
     call execute_command_line('mkdir -p data')
 
     ! 1a
     open(newunit=io1, file='data/1a.dat')
-    write(io1, *) trapezoidal(f, 0.0d0, 1.0d0, N=500)
+    res = trapezoidal(1, f, [0.0d0], [1.0d0], N=[500])
+    write(io1, *) res
     close(io1)
 
     ! 1b
@@ -51,7 +44,7 @@ program hello
     open(newunit=io2, file='data/1b_err.dat')
     do i = 2, 5
         dx = 10.0d0 ** (-i)
-        err = abs(pi - trapezoidal(f, 0.0d0, 1.0d0, dx=dx))
+        err = abs(pi - trapezoidal(1, f, [0.0d0], [1.0d0], dx=[dx]))
         write(io1, *) dx
         write(io2, *) err
     end do
@@ -60,12 +53,13 @@ program hello
 
     ! 1c
     open(newunit=io1, file='data/1c.dat')
-    write(io1, *) trapezoidal(fsin, 0.0d0, pi, N=500)
+    write(io1, *) trapezoidal(1, fsin, [0.0d0], [pi], N=[500])
     close(io1)
 
     ! 1d
     open(newunit=io1, file='data/1d.dat')
-    write(io1, *) trapezoidal(fgauss, -3.0d0, 3.0d0, N=500)
+    write(io1, *) trapezoidal(1, fgauss, [-3.0d0], [3.0d0], N=[500])
     close(io1)
 
-end program hello
+
+end program assignment
