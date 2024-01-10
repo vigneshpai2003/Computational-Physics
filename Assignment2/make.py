@@ -6,24 +6,19 @@ integrate = FortranCompiler('src/modules/integrate.f90', 'obj/modules/integrate.
 randomtest = FortranCompiler('src/modules/randomtest.f90', 'obj/modules/randomtest.o')
 
 # assignment questions
-q1 = FortranCompiler('src/1.f90', 'obj/1.o')
-q1.add_modules(integrate)
+q1 = FortranCompiler('src/1.f90', 'obj/1.o', integrate)
 
-q2 = FortranCompiler('src/2.f90', 'obj/2.o')
-q2.add_modules(randomtest)
+q2 = FortranCompiler('src/2.f90', 'obj/2.o', randomtest)
 
-q5 = FortranCompiler('src/5.f90', 'obj/5.o')
-q5.add_modules(integrate)
+q5 = FortranCompiler('src/5.f90', 'obj/5.o', integrate)
 
 l1 = FortranLinker('bin/1.bin', q1)
 l2 = FortranLinker('bin/2.bin', q2)
 l5 = FortranLinker('bin/5.bin', q5)
 
 # fortran file to run random stuff
-scratch = FortranCompiler('src/scratch.f90', 'obj/scratch.o')
-scratch.add_modules(integrate)
-
-lscratch = FortranLinker('bin/scratch.bin', scratch, integrate)
+scratch = FortranCompiler('src/scratch.f90', 'obj/scratch.o', integrate)
+lscratch = FortranLinker('bin/scratch.bin', scratch)
 
 commands = {
     '1': FortranExecutor(l1),

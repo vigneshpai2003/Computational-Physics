@@ -198,18 +198,21 @@ class Command:
 class FortranCompiler(Command):
     MOD_DIR = 'modules'
 
-    def __init__(self, source: str, obj: str):
+    def __init__(self, source: str, obj: str, *modules: FortranCompiler, remember=True):
         """
         Command to compile a source file into an object file
         - source: the file to compile
         - obj: the file to store the compiled object
-        - MOD_DIR: the folder to store .mod files
+        - *modules (optional): sequence of modules this compiler should compile before this file
+        - remember: whether to use the modules in linking
         """
         super().__init__()
         self.source = source
         self.obj = obj
 
         self.linker_modules = []
+
+        self.add_modules(*modules, remember=remember)
 
         # rebuild obj only if source is changed
         self.add_prerequisites(lambda: needs_rebuild(
@@ -252,9 +255,9 @@ class FortranLinker(Command):
         """
         super().__init__()
         self.add_dependencies(*compilers)
-        
+
         objs = [compiler.obj for compiler in compilers]
-        
+
         for compiler in compilers:
             objs.extend([module.obj for module in compiler.linker_modules])
 
