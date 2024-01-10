@@ -26,8 +26,8 @@ program assignment
 
     implicit none
 
-    real(8) :: err, dx, res, a(6), b(6)
-    integer :: i, io1, io2, N(6)
+    real(8) :: err, dx, res
+    integer :: i, io1, io2
 
     procedure(integrable_function) :: f, fsin, fgauss
 
@@ -60,6 +60,5 @@ program assignment
     open(newunit=io1, file='data/1d.dat')
     write(io1, *) trapezoidal(1, fgauss, [-3.0d0], [3.0d0], N=[500])
     close(io1)
-
 
 end program assignment

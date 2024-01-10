@@ -20,16 +20,16 @@ program assignment
 
     implicit none
 
-    procedure(integrable_function) :: g, g2
+    procedure(integrable_function) :: g2
 
     real(8) :: a(6), b(6)
+    real(8), parameter :: integral_val = 10.962374249993158057378737258690728183574403397727972963531570721
     integer :: N(6)
 
     a = - pi / 2 + 0.001
     b = pi / 2 - 0.001
     N = 20
 
-    print *, N(1), 'trapezoidal: ', trapezoidal(6, g2, a, b, N=N)
-    print *, N(1), 'simpson: ', simpson(6, g2, a, b, N=N)
+    print *, abs(integral_val - trapezoidal(6, g2, a, b, N=N))
 
 end program assignment
