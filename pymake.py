@@ -2,11 +2,10 @@
 pymake.py is a module for automation of tasks, with support for fortran builds, in python
 """
 from __future__ import annotations
-from typing import Any, List, Union, Dict, Callable
+from typing import Any, List, Union, Dict
 import subprocess
 from pathlib import Path
 import argparse
-from colorama import Fore, Style
 
 
 timer = '/usr/bin/time --format="\\n Executed in %e seconds with %P CPU"'
@@ -114,27 +113,40 @@ def files_in(folder: Union[str, Path], recursive=False):
 
 class Logger:
     arrow = f"==>"
-    reset = f"{Style.RESET_ALL}"
 
-    def fortran_compile_start(compiler: FortranCompiler):
-        print(
-            f"🛠️  Compiling: {Style.DIM}{compiler.source}{Logger.reset} {Logger.arrow} {Fore.BLUE}{compiler.obj}{Logger.reset}\n")
+    _ANSI = lambda n: "\033[" + str(n) + 'm'
 
-    def fortran_linker_start(linker: FortranLinker):
-        print(
-            f"⛓️  Linking: {Fore.BLUE}{' '.join(linker.objs)}{Logger.reset} {Logger.arrow} {Fore.RED}{linker.bin}{Logger.reset}\n")
+    RED = _ANSI(31)
+    GREEN = _ANSI(32)
+    BLUE = _ANSI(34)
 
-    def fortran_execute_start(executor: FortranExecutor):
-        print(
-            f'\033[92m ▶\033[00m Running: {Fore.RED}{executor.bin}{Logger.reset}\n')
+    RESET = _ANSI(0)
+    DIM = _ANSI(2)
 
-    def latex_compiler_start(compiler: LaTeXCompiler):
+    @classmethod
+    def fortran_compile_start(cls, compiler: FortranCompiler):
         print(
-            f"📜 Compiling LaTeX: {Style.DIM}{compiler.filename}{Logger.reset} {Logger.arrow} {Fore.GREEN}{compiler.pdfname}{Logger.reset}\n")
+            f"🛠️  Compiling: {cls.DIM}{compiler.source}{cls.RESET} {cls.arrow} {cls.BLUE}{compiler.obj}{cls.RESET}\n")
 
-    def python_start(script: PythonScript):
+    @classmethod
+    def fortran_linker_start(cls, linker: FortranLinker):
         print(
-            f"🐍 Running Python Script: {Style.DIM}{script.source}{Logger.reset}\n")
+            f"⛓️  Linking: {cls.BLUE}{' '.join(linker.objs)}{cls.RESET} {cls.arrow} {cls.RED}{linker.bin}{cls.RESET}\n")
+
+    @classmethod
+    def fortran_execute_start(cls, executor: FortranExecutor):
+        print(
+            f'\033[92m ▶\033[00m Running: {cls.RED}{executor.bin}{cls.RESET}\n')
+
+    @classmethod
+    def latex_compiler_start(cls, compiler: LaTeXCompiler):
+        print(
+            f"📜 Compiling LaTeX: {cls.DIM}{compiler.filename}{cls.RESET} {cls.arrow} {cls.GREEN}{compiler.pdfname}{cls.RESET}\n")
+
+    @classmethod
+    def python_start(cls, script: PythonScript):
+        print(
+            f"🐍 Running Python Script: {cls.DIM}{script.source}{cls.RESET}\n")
 
 
 class Command:
@@ -196,19 +208,22 @@ class Command:
 
 
 class FortranCompiler(Command):
-    MOD_DIR = 'modules'
+    MOD_DIR = 'build/modules'
 
     def __init__(self, source: str, obj: str, *modules: FortranCompiler, remember=True):
         """
         Command to compile a source file into an object file
         - source: the file to compile
-        - obj: the file to store the compiled object
+        - obj: the file to store the compiled object, use 'default' for default location
         - *modules (optional): sequence of modules this compiler should compile before this file
         - remember: whether to use the modules in linking
         """
         super().__init__()
         self.source = source
         self.obj = obj
+
+        if self.obj.lower() == 'default':
+            self.obj = f'build/obj/{self.source.replace(".f90", ".o")}'
 
         self.linker_modules = []
 
@@ -250,7 +265,7 @@ class FortranLinker(Command):
     def __init__(self, bin, *compilers: FortranCompiler):
         """
         Command to link object files made by compilers into a binary
-        - bin: the binary file to make
+        - bin: the binary file to make, use 'default:x' to store in default location with name x
         - *compilers: a sequence of compilers
         """
         super().__init__()
@@ -268,6 +283,9 @@ class FortranLinker(Command):
                 self.objs.append(obj)
 
         self.bin = bin
+
+        if self.bin.lower()[:len('default')] == 'default':
+            self.bin = f'build/bin/{self.bin[len("default:"):]}.bin'
 
         # rebuild only if object files changed
         self.add_prerequisites(lambda: needs_rebuild(
@@ -289,6 +307,13 @@ class FortranLinker(Command):
 
     def action(self):
         sh(f"gfortran {' '.join(self.flags)} -o {self.bin} {' '.join(self.objs)}")
+
+    @property
+    def binary(self):
+        """
+        an object that can execute the binary made by linker
+        """
+        return FortranExecutor(self)
 
 
 class FortranExecutor(Command):
@@ -336,6 +361,9 @@ class LaTeXCompiler(Command):
 
     def action(self):
         sh(f'cd {self.folder} && pdflatex {" ".join(self.flags)} {self.filename} 1>/dev/null')
+    
+    def clean(folder):
+        sh(f'cd {folder} && rm -rf *.aux *.fdb_latexmk *.fls *.log *.gz')
 
 
 class PythonScript(Command):

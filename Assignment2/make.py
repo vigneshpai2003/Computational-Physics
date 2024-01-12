@@ -1,33 +1,33 @@
 #!/usr/bin/env python3
 import sys; sys.path.append('../')
 from pymake import *
+from pymake import FortranCompiler as Compiler, FortranLinker as Linker
 
-integrate = FortranCompiler('src/modules/integrate.f90', 'obj/modules/integrate.o')
-randomtest = FortranCompiler('src/modules/randomtest.f90', 'obj/modules/randomtest.o')
+integrate = Compiler('src/modules/integrate.f90', 'default')
+randomtest = Compiler('src/modules/randomtest.f90', 'default')
 
 # assignment questions
-q1 = FortranCompiler('src/1.f90', 'obj/1.o', integrate)
+q1 = Compiler('src/1.f90', 'default', integrate)
+q2 = Compiler('src/2.f90', 'default', randomtest)
+q5 = Compiler('src/5.f90', 'default', integrate)
 
-q2 = FortranCompiler('src/2.f90', 'obj/2.o', randomtest)
-
-q5 = FortranCompiler('src/5.f90', 'obj/5.o', integrate)
-
-l1 = FortranLinker('bin/1.bin', q1)
-l2 = FortranLinker('bin/2.bin', q2)
-l5 = FortranLinker('bin/5.bin', q5)
+l1 = Linker('default:1', q1)
+l2 = Linker('default:2', q2)
+l5 = Linker('default:5', q5)
 
 # fortran file to run random stuff
-scratch = FortranCompiler('src/scratch.f90', 'obj/scratch.o', integrate)
-lscratch = FortranLinker('bin/scratch.bin', scratch)
+scratch = Compiler('src/scratch.f90', 'default', integrate)
+lscratch = Linker('default:scratch', scratch)
 
 commands = {
-    '1': FortranExecutor(l1),
-    '2': FortranExecutor(l2),
-    '5': FortranExecutor(l5),
-    'scratch': FortranExecutor(lscratch),
+    '1': l1.binary,
+    '2': l2.binary,
+    '5': l5.binary,
+    'scratch': lscratch.binary,
     'clean': lambda : (
         print('🔥 CLEANING'),
-        sh(f'rm -rf bin obj {FortranCompiler.MOD_DIR} data'),
+        sh(f'rm -rf build data'),
+        LaTeXCompiler.clean('tex'),
         print('')
     ),
 }
