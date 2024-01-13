@@ -1,5 +1,5 @@
 program assignment
-    use randomtest
+    use random
 
     implicit none
 

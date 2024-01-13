@@ -27,6 +27,7 @@ commands = {
     '2': l2.binary,
     '4': l4.binary,
     '5': l5.binary,
+    'all': ('1', '2', '4', '5'),
     'scratch': lscratch.binary,
     'clean': lambda : (
         print('🔥 CLEANING'),
