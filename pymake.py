@@ -271,10 +271,17 @@ class FortranLinker(Command):
         super().__init__()
         self.add_dependencies(*compilers)
 
-        objs = [compiler.obj for compiler in compilers]
+        all_compilers = [_ for _ in compilers]
+
+        def find_compiler_recursive(compiler):
+            for module in compiler.linker_modules:
+                find_compiler_recursive(module)
+            all_compilers.extend(compiler.linker_modules)
 
         for compiler in compilers:
-            objs.extend([module.obj for module in compiler.linker_modules])
+            find_compiler_recursive(compiler)
+
+        objs = [compiler.obj for compiler in all_compilers]
 
         # remove duplicate objs
         self.objs = []

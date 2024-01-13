@@ -5,12 +5,13 @@ from pymake import FortranCompiler as Compiler, FortranLinker as Linker
 
 integrate = Compiler('src/modules/integrate.f90', 'default')
 random = Compiler('src/modules/random.f90', 'default')
+mc = Compiler('src/modules/mc.f90', 'default', random)
 
 # assignment questions
 q1 = Compiler('src/1.f90', 'default', integrate)
 q2 = Compiler('src/2.f90', 'default', random)
 q4 = Compiler('src/4.f90', 'default', random)
-q5 = Compiler('src/5.f90', 'default', integrate)
+q5 = Compiler('src/5.f90', 'default', integrate, mc)
 
 l1 = Linker('default:1', q1)
 l2 = Linker('default:2', q2)
