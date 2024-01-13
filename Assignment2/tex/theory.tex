@@ -94,4 +94,38 @@ It can be verified that $x, y$ have distribution $\rho$.
 
 Note that if a random variable $X$ has distribution $\rho$, then $\sigma X + \mu$ has Gaussian distribution with mean $\mu$ and variance $\sigma^2$.
 
+\section{Monte Carlo Integration}
+
+Suppose we wish to calculate the following integral
+\begin{align*}
+    I = \int_0^1 J(x) dx
+\end{align*}
+Let $X$ be the uniform random variable in $[0, 1]$ as before, then we can approximate $I$ as
+\begin{align*}
+    I \approx \langle J \rangle = \frac{1}{N} \sum_{i=1}^N J(x_i)
+\end{align*}
+where $x_1, ..., x_N$ are $N$ samples of $X$.
+By CLT, it is obvious that the distribution of $I$ will be a Gaussian with standard deviation
+\begin{align*}
+    \sigma = \frac{\sigma_J}{\sqrt{N}} = \sqrt{\frac{\langle J^2 \rangle - \langle J \rangle^2}{N}}
+\end{align*}
+the averages of $J, J^2$ could be computed using $J(x_i)$.
+
+For integrals with different limits, we would need to transform our random variables. Suppose our limits are $a, b$ and $\rho$ is a probability distribution function on $[a, b]$.
+Then we can write
+\begin{align*}
+    I = \int_a^b J(y) dy = \int_a^b \frac{J(y)}{\rho(y)} \rho(y) dy
+\end{align*}
+Define $\tilde{J}(y) = J(y) / \rho(y)$ and suppose $Y$ is a random variable with distribution $\rho$, then we can approximate $I$ as
+\begin{align*}
+    I \approx \frac{1}{N} \sum_{i=1}^N \tilde{J}(y_i)
+\end{align*}
+where $y_1, ..., y_N$ are $N$ samples of $Y$.
+Usually, $Y$ is obtained by a transformation $f$ of $X$.
+\begin{align*}
+    I \approx \frac{1}{N} \sum_{i=1}^N \tilde{J}(f(x_i))
+\end{align*}
+where $x_1, ..., x_N$ are $N$ samples of $X$. When the distribution $\rho$ is chosen to be of a similar shape to $J$,
+it is known as importance sampling.
+
 \end{document}

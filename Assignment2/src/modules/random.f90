@@ -39,7 +39,6 @@ contains
 
     ! Marsaglia polar method
     subroutine box_muller(array, sigma, mu)
-        ! array size must be even
         real(8), intent(out) :: array(:)
         real(8), optional, value :: sigma, mu
         
@@ -69,6 +68,21 @@ contains
             array(i) = t * u + mu
             array(N + i) = t * v + mu
         end do
+
+        if (mod(N, 2) == 1) then
+            s = 2.0d0
+            do while (s > 1)
+                call random_number(u)
+                call random_number(v)
+                u = 2 * u - 1
+                v = 2 * v - 1
+                s = u*u + v*v
+            end do
+
+            t = sigma * sqrt(-(2 * log(s)) / s)
+            
+            array(2 * N + 1) = t * u + mu
+        end if
     end subroutine
 
     ! basic method using exp
@@ -92,17 +106,17 @@ contains
 
         N = size(array) / 2
 
-        allocate(U(N))
-        allocate(V(N))
-        allocate(z(N))
+        allocate(U(N + mod(size(array), 2)))
+        allocate(V(N + mod(size(array), 2)))
+        allocate(z(N + mod(size(array), 2)))
 
         call random_number(U)
         call random_number(V)
 
         z = sigma * sqrt(- 2 * log(U)) * exp(twopi_i * V) + mu
 
-        array(1:N) = real(z)
-        array(N+1:2*N) = imag(z)
+        array(1:N+mod(N, 2)) = real(z)
+        array(N+1:size(array)) = imag(z)
 
         deallocate(U)
         deallocate(V)

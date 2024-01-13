@@ -1,4 +1,4 @@
-module integrate
+module integrate  
     implicit none
 
     real(8), parameter :: pi = 2 * asin(1.0d0)
@@ -12,8 +12,9 @@ module integrate
 
 contains
 
+    ! trapezoidal rule (linear interpolation)
+    ! error = O(1/prod(N)^2)
     function trapezoidal(d, f, a, b, dx, N) result(integral)
-
         integer, intent(in) :: d
         procedure(integrable_function) :: f
         real(8), intent(in) :: a(d), b(d)
@@ -52,11 +53,12 @@ contains
         end do
 
         integral = integral * product(dx_)
-
     end function
 
+    ! Simpson's 1/3 rule (quadratic interpolation)
+    ! N must be multiple of 2
+    ! error = O(1/prod(N)^4)
     function simpson(d, f, a, b, dx, N) result(integral)
-
         integer, intent(in) :: d
         procedure(integrable_function) :: f
         real(8), intent(in) :: a(d), b(d)
@@ -97,11 +99,12 @@ contains
         end do
 
         integral = integral * product(dx_) * ((2.0d0 / 3.0d0) ** d)
-
     end function
 
+    ! Simpson's 3/8 rule (cubic interpolation)
+    ! N must be multiple of 3
+    ! error = O(1/prod(N)^4)
     function simpson2(d, f, a, b, dx, N) result(integral)
-
         integer, intent(in) :: d
         procedure(integrable_function) :: f
         real(8), intent(in) :: a(d), b(d)
@@ -142,11 +145,12 @@ contains
         end do
 
         integral = integral * product(dx_) * ((3.0d0 / 4.0d0) ** d)
-
     end function
 
-    function bode(d, f, a, b, dx, N) result(integral)
-
+    ! Boole's rule (biquadratic interpolation)
+    ! N must be multiple of 5
+    ! error = O(1/prod(N)^7)
+    function boole(d, f, a, b, dx, N) result(integral)
         integer, intent(in) :: d
         procedure(integrable_function) :: f
         real(8), intent(in) :: a(d), b(d)
@@ -182,14 +186,13 @@ contains
             end do
 
             weight = (6.0d0 / 7.0d0) ** (count(mod(lattice, 4)==2)) &
-                    * (16.0d0 / 7.0d0) ** (count(mod(lattice, 2)==1)) &
-                    / 2.0d0 ** (count(mod(lattice, N_)==0))
+                * (16.0d0 / 7.0d0) ** (count(mod(lattice, 2)==1)) &
+                / 2.0d0 ** (count(mod(lattice, N_)==0))
 
             integral = integral + f(a + lattice * dx_) * weight
         end do
 
         integral = integral * product(dx_) * ((28.0d0 / 45.0d0) ** d)
-
     end function
 
 end module integrate
