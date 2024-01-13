@@ -333,11 +333,12 @@ class FortranExecutor(Command):
 
 
 class LaTeXCompiler(Command):
-    def __init__(self, folder: str, filename: str):
+    def __init__(self, folder: str, filename: str, pdf_prereq=True):
         """
         Compiles a LaTeX file with folder as the working directory
         - folder: the folder containg the LaTeX document
         - filename: the name of the LaTeX document with .tex extension
+        - pdf_prereq: whether to only build pdf when source file changes
         """
         super().__init__()
         self.folder = folder
@@ -355,6 +356,12 @@ class LaTeXCompiler(Command):
         self.flags = []
         self.add_flags('-halt-on-error',
                        '-interaction=nonstopmode', '-file-line-error')
+        
+        if pdf_prereq:
+            self.add_prerequisites(lambda: needs_rebuild(
+                [Path(self.pdf)],
+                [Path(self.file)]
+            ))
 
     def add_flags(self, *flags: str):
         self.flags.extend(flags)

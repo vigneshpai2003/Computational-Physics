@@ -1,0 +1,97 @@
+\documentclass{article}
+
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath}
+
+\title{Random Numbers and Monte Carlo Integration}
+\author{Vignesh M Pai (20211132)}
+\date{}
+
+\begin{document}
+
+\maketitle
+
+\section{Transforming One Dimensional Probability Distributions}
+
+We start with a random number generator $X$ that uniformly gives a random number in the
+range $[0, 1]$. The problem is to transform this number by a bijective function $f: [0, 1] \to [a, b]$ such that the resulting
+random function $Y=f(X)$ has probability distribution function $\rho$. In other words, we need to satisfy the equation
+\begin{align}\label{eq1}
+    p(Y \in [y, y + dy]) = \rho(y) dy
+\end{align}
+
+We know that
+\begin{align}
+    p(Y \in [f(x), f(x) + f'(x) dx]) = p(X \in [x, x + dx]) = dx
+\end{align}
+substituting $y = f(x)$ and $dy = f'(x) dx$, we get
+\begin{align}
+    p(Y \in [y, y + dy]) = \frac{dy}{f'(x)} = \frac{dy}{f'(f^{-1}(y))}
+\end{align}
+Let the inverse of $f$ be $g$, then
+\begin{align}
+    f'(f^{-1}(y)) = f'(g(y)) = \frac{1}{g'(y)}
+\end{align}
+
+Substituting back to (\ref{eq1}), we get that
+\begin{gather*}
+    g'(y) = \rho(y) \\
+    f^{-1}(y) = \int_a^y \rho(y) dy
+\end{gather*}
+Hence, to find $f$, $\rho$ needs to be integrable and the integral needs to be invertible.
+Let's calculate $f$ for some common values of $\rho$.
+
+\begin{enumerate}
+    \item
+    \begin{align*}
+        \rho(x) &= e^{-\lambda x},\quad x \geq - \frac{\ln{\lambda}}{\lambda} \\
+        g(y) &= 1 - \frac{e^{-\lambda y}}{\lambda} \\
+        f(x) &= - \frac{\ln(\lambda(1- x))}{\lambda}     
+    \end{align*}
+    \item
+    \begin{align*}
+        \rho(x) &= \lambda e^{-\lambda x},\quad x \geq 0 \\
+        g(y) &= 1 - e^{-\lambda y} \\
+        f(x) &= - \frac{\ln(1- x)}{\lambda}  
+    \end{align*}
+\end{enumerate}
+
+\section{Transforming the Gaussian Distribution}
+
+Suppose we wish to calculate $f$ for $\rho$ given by
+\begin{align*}
+    \rho(x) = \frac{1}{\sqrt{2\pi}} \exp\left(-\frac{x^2}{2}\right)
+\end{align*}
+Clearly, this is not integrable, hence calculating $f$ is not so simple.
+However, we know that $\rho'(x, y) = \rho(x)\rho(y)$ is integrable once transformed to polar coordinates.
+\begin{align*}
+    \rho'(x, y) dx dy &= \rho'(r \cos(\theta), r \sin(\theta)) r dr d\theta \\
+    &= \frac{1}{2 \pi} \exp\left(-\frac{r^2}{2}\right) r dr d\theta \\
+    &= - d \left(\exp\left(-\frac{r^2}{2}\right) \right) d\left(\frac{\theta}{2\pi}\right)
+\end{align*}
+If we choose the change of variables
+\begin{align*}
+    U &= \exp\left(-\frac{r^2}{2}\right) \\
+    V &= \frac{\theta}{2\pi}
+\end{align*}
+then note that $U, V$ lie in the range $[0, 1]$. If $U, V$ set to be random variables,
+and we write $x, y$ as
+\begin{align*}
+    x &= r \cos(\theta) = \sqrt{-2 \ln U} \cos(2 \pi V) \\
+    y &= r \sin(\theta) = \sqrt{-2 \ln U} \sin(2 \pi V)
+\end{align*}
+then $x, y$ will each be random variables with the distribution $\rho$.
+The proof of this fact essentially lies in the change of variables we performed to derive $U, V$.
+
+It turns out trigonometric functions are expensive to compute. Therefore, in practice, we can use the Marsaglia polar method.
+Let $u, v$ be random variables in $[-1, 1]$ (they represent $\sqrt{U} \cos{\theta}$ and $\sqrt{U} \sin {\theta}$), let $s = u^2 + v^2$ and continue until $s \leq 1$.
+We now write $x, y$ as
+\begin{align*}
+    x &= \sqrt{-2\ln s} \frac{u}{\sqrt{s}} = \sqrt{\frac{-2\ln s}{s}} u \\
+    y &= \sqrt{-2\ln s} \frac{v}{\sqrt{s}} = \sqrt{\frac{-2\ln s}{s}} v
+\end{align*}
+It can be verified that $x, y$ have distribution $\rho$.
+
+Note that if a random variable $X$ has distribution $\rho$, then $\sigma X + \mu$ has Gaussian distribution with mean $\mu$ and variance $\sigma^2$.
+
+\end{document}

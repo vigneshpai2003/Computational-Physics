@@ -4,6 +4,7 @@ __pycache__
 *.bin
 *.mod
 *.o
+build
 
 *.log
 *.aux
@@ -11,14 +12,8 @@ __pycache__
 *.fls
 *.fdb_latexmk
 
-Assignment1/bin
-Assignment1/modules
-Assignment1/obj
 Assignment1/data
 Assignment1/figures
 
-Assignment2/bin
-Assignment2/obj
-Assignment2/modules
 Assignment2/data
 Assignment2/figures

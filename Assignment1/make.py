@@ -35,7 +35,7 @@ py_postprocessor.add_preruns(
 latex = LaTeXCompiler('tex', 'submission.tex')
 latex.add_prerequisites(lambda: needs_rebuild(
     [Path(latex.pdf)],
-    [Path(latex.file)] + files_in('figures', True)
+    files_in('figures', True)
 ))
 
 arg_map = {
