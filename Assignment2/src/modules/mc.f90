@@ -1,5 +1,6 @@
 module mc
-    use random
+    use random, only: box_muller, pi
+
     implicit none
 
     abstract interface
@@ -13,14 +14,14 @@ contains
     ! error = O(1/N^0.5)
 
     ! Monte Carlo with custom random number generator
-    subroutine mc_custom(d, f, N, integral, rn_generator, error)
+    subroutine mc_custom(d, f, N, integral, rng, error)
         integer, intent(in) :: d, N
         procedure(mc_function) :: f
         real(8), intent(out) :: integral
         real(8), intent(out), optional :: error
 
         interface
-            subroutine rn_generator(harvest)
+            subroutine rng(harvest)
                 real(8) :: harvest(:)
             end subroutine
         end interface
@@ -39,7 +40,7 @@ contains
             avg_f2 = 0
 
             do i = 1, N
-                call rn_generator(x)
+                call rng(x)
                 integral = integral + f(x)
                 avg_f2 = avg_f2 + f(x)**2
             end do
@@ -47,7 +48,7 @@ contains
             avg_f2 = avg_f2 / N
         else
             do i = 1, N
-                call rn_generator(x)
+                call rng(x)
                 integral = integral + f(x)
             end do
         end if
