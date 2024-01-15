@@ -1,21 +1,11 @@
-function f(x) result(y)
-    real(8), intent(in) :: x(:)
-    real(8) :: y
-
-    y = x(1)**3
-end function
-
 program scratch
-    use integrate
-    use mc
-    
     implicit none
 
-    procedure(integrable_function) :: f
-    real(8) :: integral, error
-
-    call mc_brute(1, f, 10, integral, error)
-
-    print *, integral, error, error / integral * 100
-
+    print '(F17.15)', 0.0
+    print '(F17.15)', 1.0
+    print '(F17.15)', 2.0
+    print '(F17.15)', 0.5
+    print '(F17.15)', 0.25
+    print '(F17.15)', 0.125
+    print '(F17.15)', 0.1d0
 end program scratch

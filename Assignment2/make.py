@@ -22,12 +22,23 @@ l5 = Linker('default:5', q5)
 scratch = Compiler('src/scratch.f90', 'default', integrate)
 lscratch = Linker('default:scratch', scratch)
 
+# python plotting
+plotter = PythonScript('plot.py', '../venv/bin/python3')
+plotter.add_prerequisites(lambda: needs_rebuild(
+    files_in('figures', True),
+    [Path(plotter.source)] + files_in('data', True)
+))
+plotter.add_preruns(
+    lambda: mkdir('figures')
+)
+
 commands = {
     '1': l1.binary,
     '2': l2.binary,
     '4': l4.binary,
     '5': l5.binary,
-    'all': ('1', '2', '4', '5'),
+    'plot': plotter,
+    'all': ('1', '2', '4', '5', 'plot'),
     'scratch': lscratch.binary,
     'clean': lambda : (
         print('🔥 CLEANING'),

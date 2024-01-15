@@ -48,7 +48,7 @@ contains
         if (.not. present(sigma)) then
             sigma = 1.0d0
         else if (.not. present(mu)) then
-            mu = 1.0d0
+            mu = 0.0d0
         end if
 
         N = size(array) / 2
@@ -101,7 +101,7 @@ contains
         if (.not. present(sigma)) then
             sigma = 1.0d0
         else if (.not. present(mu)) then
-            mu = 1.0d0
+            mu = 0.0d0
         end if
 
         N = size(array) / 2
