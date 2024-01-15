@@ -11,7 +11,7 @@ program assignment
     ! 4a
     call random_number(random_array)
     lambda = 2.0d0
-    random_array = - log(lambda * (1.0d0 - random_array)) / lambda
+    random_array = - log(1.0d0 - random_array) / lambda
 
     open(newunit=io, file='data/4a.dat')
     do i = 1, size(random_array)
