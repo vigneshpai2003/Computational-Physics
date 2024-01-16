@@ -11,6 +11,12 @@ import argparse
 timer = '/usr/bin/time --format="\\n Executed in %e seconds with %P CPU"'
 
 
+class Bool:
+    never = "never"
+    maybe = False
+    always = True
+
+
 def run_arg(arg_map, arg, ignore):
     if callable(arg):
         if isinstance(arg, Command):
@@ -190,8 +196,15 @@ class Command:
         if not ignore:
             try:
                 for prerequisite in self.prerequisites:
-                    if not prerequisite():
+                    val = prerequisite()
+                    if val is Bool.never:
                         return  # if any prerequisite not satisfied
+                    elif val is Bool.maybe:
+                        continue
+                    elif val is Bool.always:
+                        break
+                else:
+                    return # if all maybe
             except:  # error in evaluation any prerequisites
                 pass
 
