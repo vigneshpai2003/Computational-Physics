@@ -120,7 +120,7 @@ def files_in(folder: Union[str, Path], recursive=False):
 class Logger:
     arrow = f"==>"
 
-    _ANSI = lambda n: "\033[" + str(n) + 'm'
+    def _ANSI(n): return "\033[" + str(n) + 'm'
 
     RED = _ANSI(31)
     GREEN = _ANSI(32)
@@ -193,18 +193,18 @@ class Command:
         for command in self.dependencies:
             command()
 
-        if not ignore:
+        if not ignore and self.prerequisites:
             try:
                 for prerequisite in self.prerequisites:
                     val = prerequisite()
                     if val is Bool.never:
-                        return  # if any prerequisite not satisfied
+                        return
                     elif val is Bool.maybe:
                         continue
                     elif val is Bool.always:
-                        break
+                        break  # if any prerequisite satisfied
                 else:
-                    return # if all maybe
+                    return  # if all maybe
             except:  # error in evaluation any prerequisites
                 pass
 
@@ -376,7 +376,7 @@ class LaTeXCompiler(Command):
         self.flags = []
         self.add_flags('-halt-on-error',
                        '-interaction=nonstopmode', '-file-line-error')
-        
+
         if pdf_prereq:
             self.add_prerequisites(lambda: needs_rebuild(
                 [Path(self.pdf)],
@@ -388,7 +388,7 @@ class LaTeXCompiler(Command):
 
     def action(self):
         sh(f'cd {self.folder} && pdflatex {" ".join(self.flags)} {self.filename} 1>/dev/null')
-    
+
     def clean(folder):
         sh(f'cd {folder} && rm -rf *.aux *.fdb_latexmk *.fls *.log *.gz')
 
