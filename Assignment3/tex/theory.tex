@@ -1,0 +1,77 @@
+\documentclass{article}
+
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath}
+\usepackage{amssymb}
+
+\title{Monte Carlo Simulation}
+\author{Vignesh M Pai (20211132)}
+\date{}
+
+\begin{document}
+
+\maketitle
+
+\section{Thermodynamics and Statistical Physics}
+
+Let $X$ be the set of possible states of a system, let $\rho$ be a probability distribution over $X$
+that signifies the probability 
+
+\section{Metropolis Hastings Algorithm}
+
+Suppose $\rho$ be a probability distribution over a space $X$
+and suppose $r: X \times X \to \mathbb{R}$ is the relative probability function
+\begin{align*}
+    r(x, y) = \frac{\rho(x)}{\rho(y)}
+\end{align*}
+In practice, it is often much easier to compute $r$ than $\rho$.
+The Metropolis Hastings algorithm is a Markov chain algorithm that generates samples from $X$ with distribution $\rho$, given $r$.
+
+A Markov chain is a sequence of random numbers that are generated iteratively by sampling from a transition probability distribution $T$.
+Concretely, if $x_k$ is the $k$th element in the sequence, $x_{k+1}$ is chosen with probability $T(x_{k + 1}, x_k)$. Our goal is to find $T$
+such that the sequence of random numbers eventually follow $\rho$. A sufficient condition for this is known as the principle of detailed balance
+\begin{align*}
+    T(y, x) \rho(x) = T(x, y) \rho(y),\quad \forall x, y \in X
+\end{align*}
+intuitively, this means that there is equal probability to transition between any two points in the samples of the distribution $\rho$.
+
+The algorithm splits the transition into two step: proposal and acceptance. In the proposal step, a point $x_p$ is proposed to be the $(k+1)$th element
+by sampling from the distribution $g(x_p, x_k)$, this is usually a function that has high probability for $x_p$ 'close' to $x_k$. In the acceptance step,
+we accept the proposed point $x_p$ with probability $A(x_p, x)$. Substituting back to the detaile balance equation, we get
+\begin{align*}
+    A(y, x) g(y, x) \rho(x) &= A(x, y) g(x, y) \rho(y) \\
+    \implies \frac{A(y, x)}{A(x, y)} &= r(y, x) \frac{g(x, y)}{g(y, x)}
+\end{align*}
+We have reduced the problem of finding $T$ to finding $A$. In this algorithm, we choose $A$ to be defined as
+\begin{align*}
+    A(y, x) = \min\left(1, r(y, x) \frac{g(x, y)}{g(y, x)}\right)
+\end{align*}
+
+\section{Ising Model}
+
+The Ising model is a $d$ dimensional lattice of length $L - 1$ in each dimension with a spin at each coordinate that may take values $\pm 1$.
+The state of the system is completely determined by the values of the spins,
+for a microstate $S$, $S_{[i]}$ denotes the value of the spin at coordinate $[i]$.
+The Hamiltonian of the microstate $S$ can be written as
+\begin{align*}
+    H(S) = - \sum_{[i],[j]} S_{[i]} S_{[j]}
+\end{align*}
+where the summation is over nearest neighbors $[i], [j]$.
+
+The partition function and thus the pdf for this model is difficult to compute, however $r$ given by
+\begin{align*}
+    r(S_1, S_2) = \exp\left(-\frac{H(S_1) - H(S_2)}{k_B T}\right)
+\end{align*}
+is easy to compute especially when $S_1$ is 'close' to $S_2$.
+Therefore, we simulate with Metropolis Hastings with $g$ given by:
+\begin{align*}
+    g(S_p, S) = \begin{cases}
+        \frac{1}{L^d}\quad &\text{$S_p$ differs from $S$ at exactly $1$ point} \\
+        0 &\text{otherwise}
+    \end{cases}
+\end{align*}
+Clearly this $g$ is symmetric ($g(x, y) = g(y, x)$), therefore $A$ simplifies to
+\begin{align*}
+    A(y, x) = \min(1, r(y, x))
+\end{align*}
+\end{document}
