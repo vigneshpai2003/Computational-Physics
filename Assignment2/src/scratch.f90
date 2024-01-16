@@ -1,11 +1,19 @@
 program scratch
     implicit none
 
-    print '(F17.15)', 0.0
-    print '(F17.15)', 1.0
-    print '(F17.15)', 2.0
-    print '(F17.15)', 0.5
-    print '(F17.15)', 0.25
-    print '(F17.15)', 0.125
-    print '(F17.15)', 0.1d0
+    real*8 :: U(10000), R(10000), pi
+    integer :: i
+
+    pi = 2 * asin(1.0d0)
+
+    call random_number(U)
+
+    R = sqrt(-2 * log(U))
+
+    open(1, file="data/scratch.dat")
+    do i = 1, size(R)
+        write(1, *) R(i)
+    end do
+    close(1)
+
 end program scratch

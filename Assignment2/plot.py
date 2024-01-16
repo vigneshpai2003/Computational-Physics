@@ -1,11 +1,13 @@
 import matplotlib.pyplot as plt
 import numpy as np
 from scipy.stats import linregress
+from scipy.optimize import curve_fit
 
-def myhist(arr, bins):
+def myhist(arr, bins, *args, **kwargs):
     count, bins = np.histogram(arr, bins, density=True)
     x = (bins[:-1] + bins[1:]) / 2
-    plt.scatter(x, count)
+    plt.scatter(x, count, *args, **kwargs)
+    return x, count
 
 def read_array(f):
     return [float(i) for i in f.readlines()]
@@ -45,19 +47,21 @@ savefig('2a')
 
 # 2b
 N = 100
-plt.plot(array[:N-1], array[1:N])
+plt.scatter(array[:N-1], array[1:N])
 plt.xlabel('$x_i$')
 plt.ylabel('$x_{i+1}$')
+plt.title('Scatter Plot of Uniform Random Variable in $[0, 1]$')
 savefig('2b')
 
 with open('data/2_correlation.dat') as f:
-    correlations = read_array(f)
+    correlations = np.array(read_array(f))
 
 # 2c
-plt.plot(range(len(correlations)), correlations)
+plt.plot(range(len(correlations)), abs(correlations))
 plt.xlabel('k')
-plt.ylabel('Auto Correlation ($C_k$)')
+plt.ylabel('Auto Correlation ($|C_k|$)')
 plt.title('Correlation Function of Uniform Random Variable in [0, 1]')
+plt.yscale('log')
 savefig('2c')
 
 with open('data/2_moments.dat') as f:
@@ -80,13 +84,17 @@ savefig('2d')
 with open('data/4a.dat') as f:
     array = np.array(read_array(f))
 
-mu = sum(array) / len(array)
-sigma = np.sqrt(sum(array**2) / len(array) - mu**2)
+x, y = myhist(array, 1000)
 
-myhist(array, 1000)
+def exp(x, l):
+    return l * np.exp(- l * x)
+
+l = curve_fit(exp, x, y)[0][0]
+
+plt.plot(x, exp(x, l), c='black')
 plt.xlabel('Samples of Random Variable')
 plt.ylabel('Normalized count')
-plt.title(f'Distribution of Exponential Random Variable\n$\\mu={round(mu, 4)}$  $\\sigma={round(sigma, 4)}$')
+plt.title(f'Distribution of Exponential Random Variable\n$\\lambda={round(l, 4)}$')
 plt.legend(["$\\rho(x)=2e^{-2x}$"])
 savefig('4a')
 
@@ -94,10 +102,14 @@ savefig('4a')
 with open('data/4b.dat') as f:
     array = np.array(read_array(f))
 
-mu = sum(array) / len(array)
-sigma = np.sqrt(sum(array**2) / len(array) - mu**2)
+x, y = myhist(array, 1000)
 
-myhist(array, 1000)
+def gauss(x, mu, sigma):
+    return np.exp(- (x - mu)**2 / (2 * sigma**2)) / (np.sqrt(2 * np.pi) * sigma)
+
+mu, sigma = curve_fit(gauss, x, y)[0]
+
+plt.plot(x, gauss(x, mu, sigma), c='black')
 plt.xlabel('Samples of Random Variable')
 plt.ylabel('Normalized count')
 plt.title(f'Distribution of Gaussian Random Variable\n$\\mu={round(mu, 4)}$  $\\sigma={round(sigma, 4)}$')

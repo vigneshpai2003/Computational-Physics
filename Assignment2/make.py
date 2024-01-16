@@ -32,20 +32,30 @@ plotter.add_preruns(
     lambda: mkdir('figures')
 )
 
+# latex compiler
+latex = LaTeXCompiler('tex', 'submission.tex')
+latex.add_prerequisites(lambda: needs_rebuild(
+    [Path(latex.pdf)],
+    files_in('figures', True) + files_in('data', True)
+))
+
 commands = {
     '1': l1.binary,
     '2': l2.binary,
     '4': l4.binary,
     '5': l5.binary,
     'plot': plotter,
-    'all': ('1', '2', '4', '5', 'plot'),
+    'latex': latex,
+    'build': ('1', '2', '4', '5'),
+    'all': ('build', 'plot', 'latex'),
     'scratch': lscratch.binary,
     'clean': lambda : (
         print('🔥 CLEANING'),
-        sh(f'rm -rf build data'),
+        sh(f'rm -rf build data figures'),
         LaTeXCompiler.clean('tex'),
         print('')
     ),
+    'theory': LaTeXCompiler('tex', 'theory.tex')
 }
 
 make_shell_parser(commands)
