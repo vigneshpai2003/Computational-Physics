@@ -6,7 +6,7 @@ program scratch
     integer :: L, i
 
     L = size(lattice, 1)
-    kbT = 3.5d0
+    kbT = 3.9d0
     
     call randomize_spins(lattice)
 

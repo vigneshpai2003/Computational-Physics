@@ -12,8 +12,5 @@ build
 *.fls
 *.fdb_latexmk
 
-Assignment1/data
-Assignment1/figures
-
-Assignment2/data
-Assignment2/figures
+Assignment*/data
+Assignment*/figures

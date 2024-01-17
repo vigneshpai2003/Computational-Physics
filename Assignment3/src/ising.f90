@@ -9,9 +9,10 @@ contains
         lattice = sign(1.0d0, lattice - 0.5d0)    
     end subroutine
 
-    function energy(lattice, L) result(E)
+    function energy(lattice, L, J_ising) result(E)
         real(8), intent(in) :: lattice(:, :, :)
         integer, intent(in) :: L
+        real(8), intent(in) :: J_ising
         real(8) :: E
 
         real(8) :: s
@@ -46,12 +47,39 @@ contains
                 end do
             end do
         end do
+
+        E = E * J_ising
     end function
 
-    subroutine metropolis(lattice, L, kbT)
+    function magnetization(lattice, L) result(M)
+        real(8), intent(in) :: lattice(:, :, :)
+        integer, intent(in) :: L
+        real(8) :: M
+        
+        M = sum(lattice)
+    end function
+
+    function avg_energy(lattice, L, J_ising) result(E)
+        real(8), intent(in) :: lattice(:, :, :)
+        integer, intent(in) :: L
+        real(8), intent(in) :: J_ising
+        real(8) :: E
+        
+        E = energy(lattice, L, J_ising) / L**3
+    end function
+
+    function avg_magnetization(lattice, L) result(M)
+        real(8), intent(in) :: lattice(:, :, :)
+        integer, intent(in) :: L
+        real(8) :: M
+        
+        M = magnetization(lattice, L) / L**3
+    end function
+
+    subroutine metropolis(lattice, L, J_ising, kbT)
         real(8), intent(inout) :: lattice(:, :, :)
         integer, intent(in) :: L
-        real(8), intent(in) :: kbT
+        real(8), intent(in) :: J_ising, kbT
 
         integer :: i, j, k
         real(8) :: s, r, E
@@ -96,13 +124,13 @@ contains
             s = s + lattice(i, j, k + 1)
         end if
 
-        E = - s * lattice(i, j, k)
+        E = - J_ising * s * lattice(i, j, k)
 
         if (E > 0.0d0) then
             lattice(i, j, k) = - lattice(i, j, k)
         else
             call random_number(r)
-            if (r < exp(-E/kbT)) then
+            if (r < exp(2 * E/kbT)) then
                 lattice(i, j, k) = - lattice(i, j, k)
             end if
         end if
