@@ -44,9 +44,10 @@ commands = {
     '2': l2.binary,
     '4': l4.binary,
     '5': l5.binary,
+    'quantum': Linker('default:quantum', Compiler('src/quantum.f90', 'default', mc)).binary,
     'plot': plotter,
     'latex': latex,
-    'build': ('1', '2', '4', '5'),
+    'build': ('1', '2', '4', '5', 'quantum'),
     'all': ('build', 'plot', 'latex'),
     'scratch': lscratch.binary,
     'clean': lambda : (
@@ -55,7 +56,7 @@ commands = {
         LaTeXCompiler.clean('tex'),
         print('')
     ),
-    'theory': LaTeXCompiler('tex', 'theory.tex')
+    'theory': LaTeXCompiler('tex', 'theory.tex'),
 }
 
 make_shell_parser(commands)
