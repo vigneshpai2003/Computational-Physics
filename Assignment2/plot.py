@@ -42,7 +42,7 @@ with open('data/2_array.dat') as f:
 myhist(array, 100)
 plt.xlabel('Samples of Random Variable')
 plt.ylabel('Normalized count')
-plt.title('Distribution of $10^6$ Uniform Random Variable in $[0, 1]$')
+plt.title('Distribution of Uniform Random Variable in $[0, 1]$')
 savefig('2a')
 
 # 2b
@@ -50,7 +50,7 @@ N = 100
 plt.scatter(array[:N-1], array[1:N])
 plt.xlabel('$x_i$')
 plt.ylabel('$x_{i+1}$')
-plt.title('Scatter Plot of $100$ Uniform Random Variable in $[0, 1]$')
+plt.title('Scatter Plot of 100 Samples')
 savefig('2b')
 
 with open('data/2_correlation.dat') as f:
@@ -94,7 +94,7 @@ l = curve_fit(exp, x, y)[0][0]
 plt.plot(x, exp(x, l), c='black')
 plt.xlabel('Samples of Random Variable')
 plt.ylabel('Normalized count')
-plt.title(f'Distribution of $10^6$ Exponential Random Variable\n$\\lambda={round(l, 4)}$')
+plt.title(f'Distribution of Exponential Random Variable\n$\\lambda={round(l, 4)}$')
 plt.legend(["$\\rho(x)=2e^{-2x}$"])
 savefig('4a')
 
@@ -112,6 +112,6 @@ mu, sigma = curve_fit(gauss, x, y)[0]
 plt.plot(x, gauss(x, mu, sigma), c='black')
 plt.xlabel('Samples of Random Variable')
 plt.ylabel('Normalized count')
-plt.title(f'Distribution of $10^6$ Gaussian Random Variable\n$\\mu={round(mu, 4)}$  $\\sigma={round(sigma, 4)}$')
+plt.title(f'Distribution of Gaussian Random Variable\n$\\mu={round(mu, 4)}$  $\\sigma={round(sigma, 4)}$')
 plt.legend([r"$\rho(x)=\frac{1}{\sqrt{8\pi}} \exp\left(-\frac{x^2}{8}\right)$"])
 savefig('4b')
