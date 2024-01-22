@@ -39,7 +39,9 @@ y_e = read_array('data/5e.dat')
 plt.scatter(np.arange(len(y_m)) + 1, y_m, s=1)
 plt.scatter(np.arange(len(y_e)) + 1, y_e, s=1)
 plt.xlabel('Iteration Number')
-plt.legend(['Magnetization per Spin', 'Energy per Spin'])
+legend = plt.legend(['Magnetization per Spin', 'Energy per Spin'])
+legend.legend_handles[0]._sizes = [30]
+legend.legend_handles[1]._sizes = [30]
 plt.title(f'$k_BT$ = 4.05\nEquilibrium Magnetization: {round(calc_eq_val(y_m), 6)}\nEquilibrium Energy: {round(calc_eq_val(y_e), 6)}')
 savefig('5.png')
 
@@ -53,7 +55,14 @@ plt.scatter(np.arange(len(y_m_2)) + 1, abs(y_m_2), s=.1)
 plt.scatter(np.arange(len(y_m_3)) + 1, abs(y_m_3), s=.1)
 plt.xlabel('Iteration Number')
 plt.ylabel('Magnitude of Magnetization per Spin')
-plt.legend(['L = 8', 'L = 9', 'L = 10'])
+legend = plt.legend([
+    f'L = 8, $\mu = {round(np.average(abs(y_m_1)), 4)}$, $\sigma = {round(np.std(abs(y_m_1)), 4)}$',
+    f'L = 9, $\mu = {round(np.average(abs(y_m_2)), 4)}$, $\sigma = {round(np.std(abs(y_m_2)), 4)}$',
+    f'L = 10, $\mu = {round(np.average(abs(y_m_3)), 4)}$, $\sigma = {round(np.std(abs(y_m_3)), 4)}$'
+])
+legend.legend_handles[0]._sizes = [30]
+legend.legend_handles[1]._sizes = [30]
+legend.legend_handles[2]._sizes = [30]
 plt.title(f'$k_BT$ = 3.9')
 savefig('6m.png')
 
@@ -66,6 +75,13 @@ plt.scatter(np.arange(len(y_e_2)) + 1, y_e_2, s=.1)
 plt.scatter(np.arange(len(y_e_3)) + 1, y_e_3, s=.1)
 plt.xlabel('Iteration Number')
 plt.ylabel('Energy per Spin')
-plt.legend(['L = 8', 'L = 9', 'L = 10'])
+legend = plt.legend([
+    f'L = 8, $\mu = {round(np.average(abs(y_e_1)), 4)}$, $\sigma = {round(np.std(abs(y_e_1)), 4)}$',
+    f'L = 9, $\mu = {round(np.average(abs(y_e_2)), 4)}$, $\sigma = {round(np.std(abs(y_e_2)), 4)}$',
+    f'L = 10, $\mu = {round(np.average(abs(y_e_3)), 4)}$, $\sigma = {round(np.std(abs(y_e_3)), 4)}$'
+])
+legend.legend_handles[0]._sizes = [30]
+legend.legend_handles[1]._sizes = [30]
+legend.legend_handles[2]._sizes = [30]
 plt.title(f'$k_BT$ = 3.9')
 savefig('6e.png')
