@@ -3,6 +3,7 @@
 \usepackage[margin=1in]{geometry}
 \usepackage{amsmath}
 \usepackage{amssymb}
+\usepackage{physics}
 
 \title{Monte Carlo Simulation}
 \author{Vignesh M Pai (20211132)}
@@ -11,6 +12,32 @@
 \begin{document}
 
 \maketitle
+
+\section{Statistical Physics}
+
+\subsection{Mathematical Formalism}
+
+A dynamical system for our purposes is a phase space $X = Q \times P$ along with a Hamiltonian $H: X \to \mathbb{R}$ and an initial state $(q_0, p_0)$.
+The dynamics are given by the first order equations
+\begin{align*}
+    \dot{q_i} = \pdv{H}{p_i},\quad \dot{p_i} = - \pdv{H}{q_i}
+\end{align*}
+We call the parametrized curve that solves these equations with the initial state given, the trajectory of the dynamical system.
+For present purposes, we do not compare dynamical systems of different Hamiltonians, assume the following results for a fixed Hamiltonian.
+
+Consider an ensemble (large collection) of dynamical system differing only perhaps in the initial state,
+we define the fluid of the ensemble at a fixed time to be the set of all states of systems in the ensemble.
+Liouville's theorem states that the measure of this fluid is conserved, it directly follows from this that
+the 'density' (or probability density) of the fluid (assuming a continuous fluid) is locally conserved.
+
+A microcanonical ensemble is an ensemble of dynamical system whose initial fluid state has uniform density over a surface of constant energy (and zero density everywhere else).
+Liouville's theorem clearly implies that the fluid of such a system is time independent
+and thus averaging over the ensemble is the same averaging over the constant energy surface.
+Further, properties of this ensemble are only dependent on the energy of the system.
+
+In order for the microcanonical ensemble and its results to be useful, we need to show that an arbitrary ensemble approaches the microcanonical ensemble.
+Birkhoff's theorem states (roughly) that if we have a function $f: X \to \mathbb{R}$, then for a dynamical system on $X$, the time average of this function is well defined.
+Further, this time average is constant over all dynamical systems whose initial state lies on the same trajectory.
 
 \section{Metropolis Hastings Algorithm}
 
