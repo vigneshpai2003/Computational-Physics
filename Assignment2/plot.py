@@ -53,10 +53,10 @@ plt.ylabel('$x_{i+1}$')
 plt.title('Scatter Plot of 100 Samples')
 savefig('2b')
 
+# 2c
 with open('data/2_correlation.dat') as f:
     correlations = np.array(read_array(f))
 
-# 2c
 plt.plot(range(len(correlations)), abs(correlations))
 plt.xlabel('k')
 plt.ylabel('Auto Correlation ($|C_k|$)')

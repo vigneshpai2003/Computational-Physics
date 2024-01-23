@@ -18,7 +18,7 @@ program assignment
     close(io)
 
     open(newunit=io, file='data/2_correlation.dat')
-    do i = 0, 100
+    do i = 0, 1000
         write(io, *) autocorrelation(random_array, i)
     end do
     close(io)
