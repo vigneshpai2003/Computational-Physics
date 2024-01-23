@@ -12,11 +12,15 @@ c3 = Compiler('src/3.f90', 'default', ising)
 c4 = Compiler('src/4.f90', 'default', ising)
 c5 = Compiler('src/5.f90', 'default', ising)
 c6 = Compiler('src/6.f90', 'default', ising)
+c7 = Compiler('src/7.f90', 'default', ising, verbose=True)
+c7.add_flags('-O2', '-fopenmp')
 
 l3 = Linker('default:3', c3)
 l4 = Linker('default:4', c4)
 l5 = Linker('default:5', c5)
 l6 = Linker('default:6', c6)
+l7 = Linker('default:7', c7, verbose=True)
+l7.add_flags('-O2', '-fopenmp')
 
 # python plotting
 plotter = PythonScript('plot.py', '../venv/bin/python3')
@@ -40,6 +44,7 @@ commands = {
     '4': l4.binary,
     '5': l5.binary,
     '6': l6.binary,
+    '7': l7.binary,
     'scratch': lscratch.binary,
     'clean': lambda : (
         print('🔥 CLEANING'),

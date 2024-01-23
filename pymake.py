@@ -223,7 +223,7 @@ class Command:
 class FortranCompiler(Command):
     MOD_DIR = 'build/modules'
 
-    def __init__(self, source: str, obj: str, *modules: FortranCompiler, remember=True):
+    def __init__(self, source: str, obj: str, *modules: FortranCompiler, remember=True, verbose=False):
         """
         Command to compile a source file into an object file
         - source: the file to compile
@@ -259,6 +259,8 @@ class FortranCompiler(Command):
         self.flags = []
         self.add_flags(f'-J{self.MOD_DIR}')
 
+        self.verbose = verbose
+
     def add_modules(self, *module_compilers: FortranCompiler, remember=True):
         """
         - module_compilers: sequence of compilers of modules that this fortran file uses, these modules are remembered when linking by default
@@ -271,11 +273,11 @@ class FortranCompiler(Command):
         self.flags.extend(flags)
 
     def action(self):
-        sh(f"gfortran {' '.join(self.flags)} -o {self.obj} -c {self.source}")
+        sh(f"gfortran {' '.join(self.flags)} -o {self.obj} -c {self.source}", self.verbose)
 
 
 class FortranLinker(Command):
-    def __init__(self, bin, *compilers: FortranCompiler):
+    def __init__(self, bin, *compilers: FortranCompiler, verbose=False):
         """
         Command to link object files made by compilers into a binary
         - bin: the binary file to make, use 'default:x' to store in default location with name x
@@ -322,11 +324,13 @@ class FortranLinker(Command):
         # flags
         self.flags = []
 
+        self.verbose = verbose
+
     def add_flags(self, *flags: str):
         self.flags.extend(flags)
 
     def action(self):
-        sh(f"gfortran {' '.join(self.flags)} -o {self.bin} {' '.join(self.objs)}")
+        sh(f"gfortran {' '.join(self.flags)} -o {self.bin} {' '.join(self.objs)}", self.verbose)
 
     @property
     def binary(self):

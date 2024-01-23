@@ -3,12 +3,12 @@ program scratch
     implicit none
 
     real(8) :: lattice(10, 10, 10)
-    real(8) :: kbT, J_ising
+    real(8) :: kBT, J_ising
     integer :: L, i, j, niter, io1, io2
 
     L = size(lattice, 1)
     J_ising = 1.0d0
-    kbT = 4.05d0
+    kBT = 4.05d0
     niter = 50000
     
     call randomize_spins(lattice)
@@ -20,7 +20,7 @@ program scratch
 
     do i=1, niter
         do j=1, L**3
-            call metropolis(lattice, L, J_ising, kbT)
+            call metropolis(lattice, L, J_ising, kBT)
         end do
 
         write(io1, *) avg_magnetization(lattice, L)

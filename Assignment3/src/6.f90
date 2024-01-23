@@ -5,11 +5,11 @@ program scratch
     real(8) :: lattice1(8, 8, 8)
     real(8) :: lattice2(9, 9, 9)
     real(8) :: lattice3(10, 10, 10)
-    real(8) :: kbT, J_ising
+    real(8) :: kBT, J_ising
     integer :: L, i, j, niter, io1, io2
 
     J_ising = 1.0d0
-    kbT = 3.9d0
+    kBT = 3.9d0
     niter = 50000
 
     call execute_command_line('mkdir -p data')
@@ -25,7 +25,7 @@ program scratch
 
     do i=1, niter
         do j=1, L**3
-            call metropolis(lattice1, L, J_ising, kbT)
+            call metropolis(lattice1, L, J_ising, kBT)
         end do
 
         write(io1, *) avg_magnetization(lattice1, L)
@@ -46,7 +46,7 @@ program scratch
 
     do i=1, niter
         do j=1, L**3
-            call metropolis(lattice2, L, J_ising, kbT)
+            call metropolis(lattice2, L, J_ising, kBT)
         end do
 
         write(io1, *) avg_magnetization(lattice2, L)
@@ -67,7 +67,7 @@ program scratch
 
     do i=1, niter
         do j=1, L**3
-            call metropolis(lattice3, L, J_ising, kbT)
+            call metropolis(lattice3, L, J_ising, kBT)
         end do
 
         write(io1, *) avg_magnetization(lattice3, L)
