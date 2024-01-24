@@ -1,28 +1,12 @@
 program scratch
-    use ising
     implicit none
 
-    real(8) :: lattice(10, 10, 10), kbT, E
-    integer :: L, i
+    integer :: x(4), i
 
-    L = size(lattice, 1)
-    kbT = 3.9d0
-    
-    call randomize_spins(lattice)
+    x = [1, 3, 5, 6]
 
-    do i=1, 100000 * L**3
-        call metropolis(lattice, L, kbT)
+    do i=0, 8
+        print *, x(i)
     end do
-
-    E = 0.0d0
-
-    do i=1, L**3
-        call metropolis(lattice, L, kbT)
-        E = E + energy(lattice, L)
-    end do
-
-    E = E / L**3
-
-    print *, E
 
 end program scratch

@@ -51,9 +51,8 @@ contains
         E = E * J_ising
     end function
 
-    function magnetization(lattice, L) result(M)
+    function magnetization(lattice) result(M)
         real(8), intent(in) :: lattice(:, :, :)
-        integer, intent(in) :: L
         real(8) :: M
         
         M = sum(lattice)
@@ -73,7 +72,7 @@ contains
         integer, intent(in) :: L
         real(8) :: M
         
-        M = magnetization(lattice, L) / L**3
+        M = magnetization(lattice) / L**3
     end function
 
     subroutine metropolis(lattice, L, J_ising, kbT)
@@ -139,16 +138,16 @@ contains
     subroutine random_site(L, i, j, k)
         integer, intent(in) :: L
         integer, intent(out) :: i, j, k
+        integer :: n
         real(8) :: r
 
         call random_number(r)
-        i = int(1 + L * r)
-        
-        call random_number(r)
-        j = int(1 + L * r)
-        
-        call random_number(r)
-        k = int(1 + L * r)
+
+        n = int(1 + L**3 * r)
+
+        i = 1 + n / (L*L)
+        j = 1 + mod(n / L, L)
+        k = 1 + mod(n, L)
     end subroutine
 
 end module ising
