@@ -15,29 +15,46 @@
 
 \section{Statistical Physics}
 
-\subsection{Mathematical Formalism}
+\subsection{Hamiltonian Dynamics}
 
-A dynamical system for our purposes is a phase space $X = Q \times P$ along with a Hamiltonian $H: X \to \mathbb{R}$ and an initial state $(q_0, p_0)$.
+A dynamical system for our purposes is a space $X = Q \times P$ along with a Hamiltonian $H: X \to \mathbb{R}$ and an initial state $(q_0, p_0)$.
 The dynamics are given by the first order equations
 \begin{align*}
     \dot{q_i} = \pdv{H}{p_i},\quad \dot{p_i} = - \pdv{H}{q_i}
 \end{align*}
-We call the parametrized curve that solves these equations with the initial state given, the trajectory of the dynamical system.
-For present purposes, we do not compare dynamical systems of different Hamiltonians, assume the following results for a fixed Hamiltonian.
+We call the parametrized curve $(q(t), p(t))$ that solves these equations with the initial state given, the trajectory of the dynamical system.
+$(q(t), p(t))$ is also called the state of the system at time $t$.
 
-Consider an ensemble (large collection) of dynamical system differing only perhaps in the initial state,
+We know that Hamiltonian dynamics preserve the Hamiltonian (energy), therefore given an initial state with a fixed energy, we define the phase space
+of this system to be the set of all points in $X$ with this given energy (the surface $H(q, p) = H(q_0, p_0)$).
+
+\subsection{Microcanonical Ensemble}
+
+Consider an ensemble (large collection) of dynamical systems differing only perhaps in the initial state,
 we define the fluid of the ensemble at a fixed time to be the set of all states of systems in the ensemble.
 Liouville's theorem states that the measure of this fluid is conserved, it directly follows from this that
 the 'density' (or probability density) of the fluid (assuming a continuous fluid) is locally conserved.
 
-A microcanonical ensemble is an ensemble of dynamical system whose initial fluid state has uniform density over a surface of constant energy (and zero density everywhere else).
+A microcanonical ensemble is an ensemble of dynamical systems whose initial fluid state has uniform density over a surface of constant energy (and zero density everywhere else).
 Liouville's theorem clearly implies that the fluid of such a system is time independent
 and thus averaging over the ensemble is the same averaging over the constant energy surface.
 Further, properties of this ensemble are only dependent on the energy of the system.
 
-In order for the microcanonical ensemble and its results to be useful, we need to show that an arbitrary ensemble approaches the microcanonical ensemble.
-Birkhoff's theorem states (roughly) that if we have a function $f: X \to \mathbb{R}$, then for a dynamical system on $X$, the time average of this function is well defined.
-Further, this time average is constant over all dynamical systems whose initial state lies on the same trajectory.
+\subsection{Ergodic Theory}
+
+In order for the microcanonical ensemble and its results to be useful, we need to show that the time average of a dynamical system with an arbitrary initial state
+approaches the microcanonical ensemble average, this comes under ergodic theory.
+We define an ergodic component of the phase space as an equivalence class on the phase space,
+two points lie on the same ergodic component if there exists a trajectory connecting them.
+
+We define a dynamical system to be ergodic, if there exists an ergodic component that is dense in phase space.
+Equivalently, if the ergodic components with non zero volume have volume equal to that of phase space.
+For a dynamical system with initial state $(q_0, p_0)$, the time average of a quantity $O$ is defined as
+\begin{align*}
+    \bar{O}(q_0, p_0) := \lim_{T \to \infty} \frac{1}{T} \int_0^T O(q(t), p(t)) dt
+\end{align*}
+Clearly $\bar{O}$ is constant over a trajectory, hence it is constant over an ergodic component, and thus over phase space except a region of zero volume.
+This shows the required result.
 
 \section{Metropolis Hastings Algorithm}
 
@@ -61,8 +78,8 @@ The algorithm splits the transition into two step: proposal and acceptance. In t
 by sampling from the distribution $g(x_p, x_k)$, this is usually a function that has high probability for $x_p$ 'close' to $x_k$. In the acceptance step,
 we accept the proposed point $x_p$ with probability $A(x_p, x)$. Substituting back to the detaile balance equation, we get
 \begin{align*}
-    A(y, x) g(y, x) \rho(x) &= A(x, y) g(x, y) \rho(y) \\
-    \implies \frac{A(y, x)}{A(x, y)} &= r(y, x) \frac{g(x, y)}{g(y, x)}
+    A(y, x) g(y, x) \rho(x)          & = A(x, y) g(x, y) \rho(y)         \\
+    \implies \frac{A(y, x)}{A(x, y)} & = r(y, x) \frac{g(x, y)}{g(y, x)}
 \end{align*}
 We have reduced the problem of finding $T$ to finding $A$. In this algorithm, we choose $A$ to be defined as
 \begin{align*}
@@ -88,9 +105,9 @@ is easy to compute especially when $S_1$ is 'close' to $S_2$.
 Therefore, we simulate with Metropolis Hastings with $g$ given by:
 \begin{align*}
     g(S_p, S) = \begin{cases}
-        \frac{1}{L^d}\quad &\text{$S_p$ differs from $S$ at exactly $1$ point} \\
-        0 &\text{otherwise}
-    \end{cases}
+                    \frac{1}{L^d}\quad & \text{$S_p$ differs from $S$ at exactly $1$ point} \\
+                    0                  & \text{otherwise}
+                \end{cases}
 \end{align*}
 Clearly this $g$ is symmetric ($g(x, y) = g(y, x)$), therefore $A$ simplifies to
 \begin{align*}
