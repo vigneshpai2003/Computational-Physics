@@ -4,9 +4,9 @@
     ],
     "fortran.fortls.disableAutoupdate": true,
 
-    "fortran.linter.compiler": "Disabled",
     "fortran.linter.includePaths": [
-        "${workscapeFolder}/Assignment1/build/modules",
-        "${workscapeFolder}/Assignment2/build/modules"
+        "${workscapeFolder}/Assignment1/src/modules",
+        "${workscapeFolder}/Assignment2/src/modules",
+        "${workscapeFolder}/Assignment3/src",
     ]
 }

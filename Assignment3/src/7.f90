@@ -31,8 +31,8 @@ contains
             call randomize_spins(lattice)
 
             ! equilibriate
-            do i=1, niter_eq
-                do j=1, L**3
+            do i = 1, niter_eq
+                do j = 1, L**3
                     call metropolis(lattice, L, J_ising, kBT)
                 end do
             end do
@@ -43,7 +43,7 @@ contains
             E = 0.0d0
             E2 = 0.0d0
 
-            do i=1, niter
+            do i = 1, niter
                 do j = 1, L**3
                     call metropolis(lattice, L, J_ising, kBT)
                 end do
