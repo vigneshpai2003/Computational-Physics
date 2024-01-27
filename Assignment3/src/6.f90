@@ -12,7 +12,7 @@ program scratch
     kBT = 3.9d0
     niter = 50000
 
-    call execute_command_line('mkdir -p data')
+    call execute_command_line('mkdir -p data/6')
 
     ! L = 8
     L = size(lattice1, 1)
@@ -20,8 +20,8 @@ program scratch
     call randomize_spins(lattice1)
 
     
-    open(newunit=io1, file='data/6m1.dat')
-    open(newunit=io2, file='data/6e1.dat')
+    open(newunit=io1, file='data/6/M1.dat')
+    open(newunit=io2, file='data/6/E1.dat')
 
     do i=1, niter
         do j=1, L**3
@@ -41,8 +41,8 @@ program scratch
     call randomize_spins(lattice2)
 
     
-    open(newunit=io1, file='data/6m2.dat')
-    open(newunit=io2, file='data/6e2.dat')
+    open(newunit=io1, file='data/6/M2.dat')
+    open(newunit=io2, file='data/6/E2.dat')
 
     do i=1, niter
         do j=1, L**3
@@ -62,8 +62,8 @@ program scratch
     call randomize_spins(lattice3)
 
     
-    open(newunit=io1, file='data/6m3.dat')
-    open(newunit=io2, file='data/6e3.dat')
+    open(newunit=io1, file='data/6/M3.dat')
+    open(newunit=io2, file='data/6/E3.dat')
 
     do i=1, niter
         do j=1, L**3

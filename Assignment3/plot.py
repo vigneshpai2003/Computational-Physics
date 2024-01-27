@@ -33,8 +33,8 @@ plt.title(f'$k_BT$ = 3.9\nEquilibrium Energy: {round(calc_eq_val(y), 6)}')
 savefig('4.png')
 
 # 5
-y_m = read_array('data/5m.dat')
-y_e = read_array('data/5e.dat')
+y_m = read_array('data/5/M.dat')
+y_e = read_array('data/5/E.dat')
 
 plt.scatter(np.arange(len(y_m)) + 1, y_m, s=1)
 plt.scatter(np.arange(len(y_e)) + 1, y_e, s=1)
@@ -46,9 +46,9 @@ plt.title(f'$k_BT$ = 4.05\nEquilibrium Magnetization: {round(calc_eq_val(y_m), 6
 savefig('5.png')
 
 # 6
-y_m_1 = read_array('data/6m1.dat')
-y_m_2 = read_array('data/6m2.dat')
-y_m_3 = read_array('data/6m3.dat')
+y_m_1 = read_array('data/6/M1.dat')
+y_m_2 = read_array('data/6/M2.dat')
+y_m_3 = read_array('data/6/M3.dat')
 
 plt.scatter(np.arange(len(y_m_1)) + 1, abs(y_m_1), s=.1)
 plt.scatter(np.arange(len(y_m_2)) + 1, abs(y_m_2), s=.1)
@@ -64,11 +64,11 @@ legend.legend_handles[0]._sizes = [30]
 legend.legend_handles[1]._sizes = [30]
 legend.legend_handles[2]._sizes = [30]
 plt.title(f'$k_BT$ = 3.9')
-savefig('6m.png')
+savefig('6M.png')
 
-y_e_1 = read_array('data/6e1.dat')
-y_e_2 = read_array('data/6e2.dat')
-y_e_3 = read_array('data/6e3.dat')
+y_e_1 = read_array('data/6/E1.dat')
+y_e_2 = read_array('data/6/E2.dat')
+y_e_3 = read_array('data/6/E3.dat')
 
 plt.scatter(np.arange(len(y_e_1)) + 1, y_e_1, s=.1)
 plt.scatter(np.arange(len(y_e_2)) + 1, y_e_2, s=.1)
@@ -84,4 +84,57 @@ legend.legend_handles[0]._sizes = [30]
 legend.legend_handles[1]._sizes = [30]
 legend.legend_handles[2]._sizes = [30]
 plt.title(f'$k_BT$ = 3.9')
-savefig('6e.png')
+savefig('6E.png')
+
+# 7
+Ta = read_array('data/7a/kBT.dat')
+Tb = read_array('data/7a/kBT.dat')
+Tc = read_array('data/7a/kBT.dat')
+
+Ma = read_array('data/7a/M.dat')
+Mb = read_array('data/7b/M.dat')
+Mc = read_array('data/7c/M.dat')
+
+Ea = read_array('data/7a/E.dat')
+Eb = read_array('data/7b/E.dat')
+Ec = read_array('data/7c/E.dat')
+
+chia = read_array('data/7a/chi.dat')
+chib = read_array('data/7b/chi.dat')
+chic = read_array('data/7c/chi.dat')
+
+Cva = read_array('data/7a/Cv.dat')
+Cvb = read_array('data/7b/Cv.dat')
+Cvc = read_array('data/7c/Cv.dat')
+
+plt.plot(Ta, Ma)
+plt.plot(Tb, Mb)
+plt.plot(Tc, Mc)
+plt.xlabel('$k_B T$')
+plt.ylabel('Magnetization per Spin')
+plt.legend(['L = 7', 'L = 8', 'L = 9'])
+savefig('7M.png')
+
+plt.plot(Ta, Ea)
+plt.plot(Tb, Eb)
+plt.plot(Tc, Ec)
+plt.xlabel('$k_B T$')
+plt.ylabel('Energy per Spin')
+plt.legend(['L = 7', 'L = 8', 'L = 9'])
+savefig('7E.png')
+
+plt.plot(Ta, chia)
+plt.plot(Tb, chib)
+plt.plot(Tc, chic)
+plt.xlabel('$k_B T$')
+plt.ylabel('Susceptibility per Spin')
+plt.legend(['L = 7', 'L = 8', 'L = 9'])
+savefig('7chi.png')
+
+plt.plot(Ta, Cva)
+plt.plot(Tb, Cvb)
+plt.plot(Tc, Cvc)
+plt.xlabel('$k_B T$')
+plt.ylabel('Heat Capacity per Spin')
+plt.legend(['L = 7', 'L = 8', 'L = 9'])
+savefig('7Cv.png')

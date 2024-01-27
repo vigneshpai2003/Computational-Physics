@@ -13,10 +13,10 @@ program scratch
     
     call randomize_spins(lattice)
 
-    call execute_command_line('mkdir -p data')
+    call execute_command_line('mkdir -p data/5')
     
-    open(newunit=io1, file='data/5m.dat')
-    open(newunit=io2, file='data/5e.dat')
+    open(newunit=io1, file='data/5/M.dat')
+    open(newunit=io2, file='data/5/E.dat')
 
     do i=1, niter
         do j=1, L**3
