@@ -56,6 +56,75 @@ For a dynamical system with initial state $(q_0, p_0)$, the time average of a qu
 Clearly $\bar{O}$ is constant over a trajectory, hence it is constant over an ergodic component, and thus over phase space except a region of zero volume.
 This shows the required result.
 
+\subsection{Entropy}
+
+\subsubsection{Parametrization of Entropy}
+
+Let $\mathcal{D}$ be the set of all dynamical systems.
+We define the entropy $S: \mathcal{D} \to \mathbb{R}$ as the logarithm of the volume of the phase space of the dynamical system.
+Let $U$ be an open set in $\mathbb{R}^k$, we define the parametrization of $\mathcal{C} \subset \mathcal{D}$ as a bijective map $\phi: U \to \mathcal{C}$.
+If $\mathcal{C}$ has a parametrization $\phi: U \to \mathcal{C}$, the entropy $S$ can be viewed as a map $S: U \to \mathbb{R}$ redefined as $S := S \circ \phi$.
+
+\subsubsection{Additive Functions}
+
+Let $A, B$ be dynamical systems with Hamiltonians $H_A: X_A \to \mathbb{R}, H_B: X_B \to \mathbb{R}$.
+The union of the systems $C = A \cup B$ is defined as the system with Hamiltonian $H_C: X_A \times X_B \to \mathbb{R}$ defined as
+\begin{align*}
+    H_C(x_A, x_B) = H_A(x_A) + H_B(x_B)
+\end{align*}
+$A, B$ are said to be subsystems of $C$. Let $\mathcal{D}' \subset \mathcal{D}$ be closed under unions.
+A function $f: \mathcal{D}' \to \mathbb{R}^k$ is called additive if
+\begin{align*}
+    f(A) + f(B) = f(A \cup B),\quad \forall A, B \in \mathcal{D}'
+\end{align*}
+Define an additive parametrization as a parametrization of entropy $\phi$ such that $\phi^{-1}$ is additive.
+
+\subsubsection{Interacting Systems}
+
+Let $C_I$ be a dynamical system with state space $X$ and state given by $x(t)$.
+A subsystem decomposition of $C_I$ is pair of functions $\Psi_1: X \to \mathcal{C}_1$ and $\Psi_2: X \to \mathcal{C}_2$
+where $\mathcal{C}_1, \mathcal{C}_2$ are subsets of $\mathcal{D}$ with parametrizations $\phi_1, \phi_2$ (of the same dimension) such that
+the function
+\begin{align*}
+    G := \phi_1^{-1} \circ \Phi_1 + \phi_2^{-1} \circ \Phi_2
+\end{align*}
+is approximately $\langle G \rangle$ with high probability (measured uniformly over $X$).
+
+Our interest is in finding $\phi_i^{-1} \circ \Phi_i$.
+
+Suppose that $E = \phi^{-1}(\Phi_1(x))$, then the number of states $x$ with this property is
+\begin{align*}
+    \exp(S(E))\exp(S(E_0 - E))
+\end{align*}
+which is maximized for
+\begin{align*}
+    \grad S(E) = 
+\end{align*}
+
+\subsubsection{Canonical Ensemble}
+
+% Now consider two dynamical systems (called the 'subsystems') with Hamiltonians $H_1: X \to \mathbb{R}, H_2: Y \to \mathbb{R}$, define the union of these dynamical systems
+% to be a dynamical system (called the 'system') on $X \times Y$ with Hamiltonian $H: X \times Y \to \mathbb{R}$ defined as
+% \begin{align*}
+%     H(x, y) = H_1(x) + H_2(y) + H_{i}(x, y)
+% \end{align*}
+% where $H_{i}$, the interaction Hamiltonian, is very small in comparision to both $H_1$ and $H_2$.
+% The significance of this term is that it allows the dynamical systems to exchange energy with each other,
+% the smallness of the term will allow us to approximate $H \approx H_1 + H_2$.
+
+% We can now ask the question of how the energy $E_0 = H(x_0, y_0)$ will be distributed among the subsystems at equilibrium.
+% If we know this energy distribution, we can apply the microcanonical ensemble on the subsystems for these energies to get the approximate properties of the system.
+
+% Corresponding to an energy distribution with the first subsystem in energy $E$ and the second in energy $E_0 - E$, there will be a collection of states of the system conforming with these energies,
+% the volume of this set will be 
+% \begin{align*}
+%     e^{S_1(E)} e^{S_2(E_0 - E)} = e^{S_1(E) + S_2(E_0 - E)}    
+% \end{align*}
+% This will be maximized for $E$ satisfying
+% \begin{align*}
+%     \dv{S_1}{E_1}\left(E\right) = \dv{S_2}{E_2}\left(E_0 - E\right)
+% \end{align*}
+
 \section{Metropolis Hastings Algorithm}
 
 Suppose $\rho$ be a probability distribution over a space $X$

@@ -33,6 +33,15 @@ plotter.add_preruns(
     lambda: mkdir('figures')
 )
 
+plotter_scratch = PythonScript('plot-scratch.py', '../venv/bin/python3')
+plotter_scratch.add_prerequisites(lambda: needs_rebuild(
+    files_in('figures', True),
+    [Path(plotter.source)] + files_in('data', True)
+))
+plotter_scratch.add_preruns(
+    lambda: mkdir('figures')
+)
+
 # latex compiler
 latex = LaTeXCompiler('tex', 'submission.tex')
 latex.add_prerequisites(lambda: needs_rebuild(
@@ -54,6 +63,7 @@ commands = {
         print('')
     ),
     'plot': plotter,
+    'plot-scratch': plotter_scratch,
     'latex': latex
 }
 

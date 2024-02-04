@@ -3,7 +3,7 @@ module simulator
 
     real(8), parameter :: J_ising = 1.0d0
     real(8), parameter :: kBT_start = 3.8d0, kBT_end = 4.7d0, kBT_step = 0.02d0
-    integer, parameter :: niter_eq = 10000, niter = 1000000
+    integer, parameter :: niter_eq = 10000, niter = 10000
     integer, parameter :: n_temp = nint((kBT_end - kBT_start) / kBT_step) + 1
 
 contains
@@ -14,7 +14,7 @@ contains
         character(*), intent(in) :: data_folder
 
         real(8) :: M_arr(n_temp), E_arr(n_temp), chi_arr(n_temp), Cv_arr(n_temp)
-        real(8) :: M, M2, M_t, E, E2, E_t
+        real(8) :: M_abs, M2, M_t, E, E2, E_t
 
         real(8) :: kBT
         integer :: L, i, j, k
@@ -22,7 +22,7 @@ contains
 
         L = size(lattice, 1)
 
-        !$omp parallel do private(kBT, lattice, M, M2, E, E2, M_t, E_t)
+        !$omp parallel do private(kBT, lattice, M_abs, M2, E, E2, M_t, E_t)
         do k = 1, n_temp
             !$omp critical
             kBT = kBT_start + (k - 1) * kBT_step
@@ -38,7 +38,7 @@ contains
             end do
 
             ! compute thermodynamic quantities
-            M = 0.0d0
+            M_abs = 0.0d0
             M2 = 0.0d0
             E = 0.0d0
             E2 = 0.0d0
@@ -48,24 +48,24 @@ contains
                     call metropolis(lattice, L, J_ising, kBT)
                 end do
 
-                M_t = abs(magnetization(lattice))
+                M_t = magnetization(lattice)
                 E_t = energy(lattice, L, J_ising)
 
-                M = M + M_t
+                M_abs = M_abs + abs(M_t)
                 M2 = M2 + M_t*M_t
                 E = E + E_t
                 E2 = E2 + E_t*E_t
             end do
 
-            M = M / niter
+            M_abs = M_abs / niter
             M2 = M2 / niter
             E = E / niter
             E2 = E2 / niter
 
-            M_arr(k) = M
+            M_arr(k) = M_abs
             E_arr(k) = E
 
-            chi_arr(k) = (M2 - M*M) / kBT
+            chi_arr(k) = (M2 - M_abs*M_abs) / kBT
             Cv_arr(k) = (E2 - E*E) / (kBT*kBT)
 
         end do
