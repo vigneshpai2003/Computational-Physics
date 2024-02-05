@@ -9,19 +9,22 @@ ising.add_flags('-O2')
 scratch = Compiler('src/scratch.f90', 'default', ising)
 lscratch = Linker('default:scratch', scratch)
 
+test = Compiler('src/test.f90', 'default', ising)
+ltest = Linker('default:test', test)
+
 c3 = Compiler('src/3.f90', 'default', ising)
 c4 = Compiler('src/4.f90', 'default', ising)
 c5 = Compiler('src/5.f90', 'default', ising)
 c6 = Compiler('src/6.f90', 'default', ising)
-c7 = Compiler('src/7.f90', 'default', ising)
-c7.add_flags('-O2', '-fopenmp')
+cf = Compiler('src/f.f90', 'default', ising)
+cf.add_flags('-O2', '-fopenmp')
 
 l3 = Linker('default:3', c3)
 l4 = Linker('default:4', c4)
 l5 = Linker('default:5', c5)
 l6 = Linker('default:6', c6)
-l7 = Linker('default:7', c7)
-l7.add_flags('-O2', '-fopenmp')
+lf = Linker('default:f', cf)
+lf.add_flags('-O2', '-fopenmp')
 
 # python plotting
 plotter = PythonScript('plot.py', '../venv/bin/python3')
@@ -33,12 +36,12 @@ plotter.add_preruns(
     lambda: mkdir('figures')
 )
 
-plotter_scratch = PythonScript('plot-scratch.py', '../venv/bin/python3')
-plotter_scratch.add_prerequisites(lambda: needs_rebuild(
+plotter_test = PythonScript('plot-test.py', '../venv/bin/python3')
+plotter_test.add_prerequisites(lambda: needs_rebuild(
     files_in('figures', True),
-    [Path(plotter.source)] + files_in('data', True)
+    [Path(plotter.source)] + files_in('data/test', True)
 ))
-plotter_scratch.add_preruns(
+plotter_test.add_preruns(
     lambda: mkdir('figures')
 )
 
@@ -50,12 +53,14 @@ latex.add_prerequisites(lambda: needs_rebuild(
 ))
 
 commands = {
+    'all': ['3', '4', '5', '6', 'f', 'plot', 'latex'],
     '3': l3.binary,
     '4': l4.binary,
     '5': l5.binary,
     '6': l6.binary,
-    '7': l7.binary,
+    'f': lf.binary,
     'scratch': lscratch.binary,
+    'test': ltest.binary,
     'clean': lambda : (
         print('🔥 CLEANING'),
         sh(f'rm -rf build data figures'),
@@ -63,7 +68,7 @@ commands = {
         print('')
     ),
     'plot': plotter,
-    'plot-scratch': plotter_scratch,
+    'plot-test': plotter_test,
     'latex': latex
 }
 

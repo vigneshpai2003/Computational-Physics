@@ -86,26 +86,26 @@ legend.legend_handles[2]._sizes = [30]
 plt.title(f'$k_BT$ = 3.9')
 savefig('6E.png')
 
-# 7
-Ta = read_array('data/7a/kBT.dat')
-Tb = read_array('data/7a/kBT.dat')
-Tc = read_array('data/7a/kBT.dat')
+# figures
+Ta = read_array('data/fa/kBT.dat')
+Tb = read_array('data/fa/kBT.dat')
+Tc = read_array('data/fa/kBT.dat')
 
-Ma = read_array('data/7a/M.dat')
-Mb = read_array('data/7b/M.dat')
-Mc = read_array('data/7c/M.dat')
+Ma = read_array('data/fa/M.dat')
+Mb = read_array('data/fb/M.dat')
+Mc = read_array('data/fc/M.dat')
 
-Ea = read_array('data/7a/E.dat')
-Eb = read_array('data/7b/E.dat')
-Ec = read_array('data/7c/E.dat')
+Ea = read_array('data/fa/E.dat')
+Eb = read_array('data/fb/E.dat')
+Ec = read_array('data/fc/E.dat')
 
-chia = read_array('data/7a/chi.dat')
-chib = read_array('data/7b/chi.dat')
-chic = read_array('data/7c/chi.dat')
+chia = read_array('data/fa/chi.dat')
+chib = read_array('data/fb/chi.dat')
+chic = read_array('data/fc/chi.dat')
 
-Cva = read_array('data/7a/Cv.dat')
-Cvb = read_array('data/7b/Cv.dat')
-Cvc = read_array('data/7c/Cv.dat')
+Cva = read_array('data/fa/Cv.dat')
+Cvb = read_array('data/fb/Cv.dat')
+Cvc = read_array('data/fc/Cv.dat')
 
 plt.plot(Ta, Ma)
 plt.plot(Tb, Mb)
@@ -113,7 +113,7 @@ plt.plot(Tc, Mc)
 plt.xlabel('$k_B T$')
 plt.ylabel('Magnetization per Spin')
 plt.legend(['L = 7', 'L = 8', 'L = 9'])
-savefig('7M.png')
+savefig('fM.png')
 
 plt.plot(Ta, Ea)
 plt.plot(Tb, Eb)
@@ -121,20 +121,50 @@ plt.plot(Tc, Ec)
 plt.xlabel('$k_B T$')
 plt.ylabel('Energy per Spin')
 plt.legend(['L = 7', 'L = 8', 'L = 9'])
-savefig('7E.png')
+savefig('fE.png')
 
 plt.plot(Ta, chia)
 plt.plot(Tb, chib)
 plt.plot(Tc, chic)
 plt.xlabel('$k_B T$')
-plt.ylabel('Susceptibility per Spin')
+plt.ylabel('Susceptibility')
 plt.legend(['L = 7', 'L = 8', 'L = 9'])
-savefig('7chi.png')
+savefig('fchi.png')
 
 plt.plot(Ta, Cva)
 plt.plot(Tb, Cvb)
 plt.plot(Tc, Cvc)
 plt.xlabel('$k_B T$')
-plt.ylabel('Heat Capacity per Spin')
+plt.ylabel('Heat Capacity')
 plt.legend(['L = 7', 'L = 8', 'L = 9'])
-savefig('7Cv.png')
+savefig('fCv.png')
+
+# 7
+i = 35
+with open('data/7.dat', 'w+') as f:
+    f.write(f"{round(chia[i], 2)}, {round(chib[i], 2)}, {round(chic[i], 2)}")
+
+# 8
+with open('data/8.dat', 'w+') as f:
+    f.write(str(round(max(Cvb), 2)))
+
+# 9
+with open('data/9.dat', 'w+') as f:
+    f.write(str(round(max(Cvc), 2)))
+
+# 10
+with open('data/10.dat', 'w+') as f:
+    f.write(str(round(Ma[0], 2)))
+
+# 11
+BCa = read_array('data/fa/BC.dat')
+BCb = read_array('data/fb/BC.dat')
+BCc = read_array('data/fc/BC.dat')
+
+plt.plot(Ta, BCa)
+plt.plot(Ta, BCb)
+plt.plot(Ta, BCc)
+plt.xlabel('$k_B T$')
+plt.ylabel('$U_L$')
+plt.title("Binder's Cumulant Plot")
+savefig('BC.png')
