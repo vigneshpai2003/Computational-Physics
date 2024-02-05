@@ -1,13 +1,16 @@
 import matplotlib.pyplot as plt
 import numpy as np
 
+
 def savefig(filename):
     plt.savefig(f'figures/{filename}', bbox_inches='tight', dpi=500)
     plt.clf()
 
+
 def calc_eq_val(array, percentage=1):
     n = int(len(array) * (1 - percentage))
     return np.average(array[n:])
+
 
 def read_array(filename):
     with open(filename) as f:
@@ -20,7 +23,8 @@ y = read_array('data/3.dat')
 plt.scatter(np.arange(len(y)) + 1, y, s=1)
 plt.xlabel('Iteration Number')
 plt.ylabel('Magnetization per Spin')
-plt.title(f'$k_BT$ = 4.9\nEquilibrium Magnetization: {round(calc_eq_val(y), 6)}')
+plt.title(
+    f'$k_BT$ = 4.9\nEquilibrium Magnetization: {round(calc_eq_val(y), 6)}')
 savefig('3.png')
 
 # 4
@@ -42,7 +46,8 @@ plt.xlabel('Iteration Number')
 legend = plt.legend(['Magnetization per Spin', 'Energy per Spin'])
 legend.legend_handles[0]._sizes = [30]
 legend.legend_handles[1]._sizes = [30]
-plt.title(f'$k_BT$ = 4.05\nEquilibrium Magnetization: {round(calc_eq_val(y_m), 6)}\nEquilibrium Energy: {round(calc_eq_val(y_e), 6)}')
+plt.title(
+    f'$k_BT$ = 4.05\nEquilibrium Magnetization: {round(calc_eq_val(y_m), 6)}\nEquilibrium Energy: {round(calc_eq_val(y_e), 6)}')
 savefig('5.png')
 
 # 6
@@ -168,3 +173,30 @@ plt.xlabel('$k_B T$')
 plt.ylabel('$U_L$')
 plt.title("Binder's Cumulant Plot")
 savefig('BC.png')
+
+# zoomed in
+plt.plot(Ta, BCa)
+plt.plot(Ta, BCb)
+plt.plot(Ta, BCc)
+plt.xlabel('$k_B T$')
+plt.ylabel('$U_L$')
+plt.xlim(4.46, 4.54)
+plt.ylim(0.45, 0.55)
+
+start = 30
+end = 40
+
+i1 = start + np.argmin(abs(BCa[start:end+1] - BCb[start:end+1]))
+i2 = start + np.argmin(abs(BCb[start:end+1] - BCc[start:end+1]))
+i3 = start + np.argmin(abs(BCc[start:end+1] - BCa[start:end+1]))
+
+T1 = Ta[i1]
+T2 = Ta[i2]
+T3 = Ta[i3]
+
+plt.scatter(T1, (BCa[i1] + BCb[i1])/2)
+plt.scatter(T2, (BCb[i2] + BCc[i2])/2)
+plt.scatter(T3, (BCc[i2] + BCa[i2])/2)
+
+plt.title(f"Binder's Cumulant Plot ($T_C \\approx {(T1 + T2 + T3)/3}$)")
+savefig('BCz.png')
