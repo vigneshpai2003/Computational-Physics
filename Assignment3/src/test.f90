@@ -5,7 +5,7 @@ program test
     
     real(8) :: lattice(10, 10, 10)
     real(8) :: kBT, J_ising
-    integer :: L, i, j, niter, io1, io2
+    integer :: L, i, niter, io1, io2
 
     L = size(lattice, 1)
     J_ising = 1.0d0
@@ -20,9 +20,7 @@ program test
     open(newunit=io2, file='data/test/M.dat')
 
     do i=1, niter
-        do j=1, L**3
-            call metropolis(lattice, L, J_ising, kBT)
-        end do
+        call metropolis(lattice, L, J_ising, kBT)
 
         write(io1, *) energy(lattice, L, J_ising)
         write(io2, *) avg_magnetization(lattice, L)

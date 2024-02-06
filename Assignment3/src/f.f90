@@ -17,7 +17,7 @@ contains
         real(8) :: M_abs, M2, M4, M_t, E, E2, E_t
 
         real(8) :: kBT
-        integer :: L, i, j, k
+        integer :: L, i, k
         integer :: io
 
         L = size(lattice, 1)
@@ -32,9 +32,7 @@ contains
 
             ! equilibriate
             do i = 1, niter_eq
-                do j = 1, L**3
-                    call metropolis(lattice, L, J_ising, kBT)
-                end do
+                call metropolis(lattice, L, J_ising, kBT)
             end do
 
             ! compute thermodynamic quantities
@@ -45,9 +43,7 @@ contains
             E2 = 0.0d0
 
             do i = 1, niter
-                do j = 1, L**3
-                    call metropolis(lattice, L, J_ising, kBT)
-                end do
+                call metropolis(lattice, L, J_ising, kBT)
 
                 M_t = magnetization(lattice)
                 E_t = energy(lattice, L, J_ising)
@@ -132,7 +128,10 @@ program scratch
     call execute_command_line('mkdir -p data/fa data/fb data/fc')
 
     call simulate(lattice1, "data/fa/")
+    print *, "Completed L=7"
     call simulate(lattice2, "data/fb/")
+    print *, "Completed L=8"
     call simulate(lattice3, "data/fc/")
+    print *, "Completed L=9"
 
 end program scratch
