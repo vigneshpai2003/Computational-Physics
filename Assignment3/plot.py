@@ -27,6 +27,11 @@ plt.title(
     f'$k_BT$ = 4.9\nEquilibrium Magnetization: {round(calc_eq_val(y), 6)}')
 savefig('3.png')
 
+plt.hist(y, 50, density=True)
+plt.xlabel('Magnetization per Spin')
+plt.ylabel('Normalized Frequency')
+savefig('3b.png')
+
 # 4
 y = read_array('data/4.dat')
 
@@ -35,6 +40,12 @@ plt.xlabel('Iteration Number')
 plt.ylabel('Energy per Spin')
 plt.title(f'$k_BT$ = 3.9\nEquilibrium Energy: {round(calc_eq_val(y), 6)}')
 savefig('4.png')
+
+
+plt.hist(y, 100, density=True)
+plt.xlabel('Energy per Spin')
+plt.ylabel('Normalized Frequency')
+savefig('4b.png')
 
 # 5
 y_m = read_array('data/5/M.dat')
@@ -112,17 +123,17 @@ Cva = read_array('data/fa/Cv.dat')
 Cvb = read_array('data/fb/Cv.dat')
 Cvc = read_array('data/fc/Cv.dat')
 
-plt.plot(Ta, Ma)
-plt.plot(Tb, Mb)
-plt.plot(Tc, Mc)
+plt.plot(Ta, Ma, marker='1')
+plt.plot(Tb, Mb, marker='2')
+plt.plot(Tc, Mc, marker='3')
 plt.xlabel('$k_B T$')
 plt.ylabel('Magnetization per Spin')
 plt.legend(['L = 7', 'L = 8', 'L = 9'])
 savefig('fM.png')
 
-plt.plot(Ta, Ea)
-plt.plot(Tb, Eb)
-plt.plot(Tc, Ec)
+plt.plot(Ta, Ea, marker='1')
+plt.plot(Tb, Eb, marker='2')
+plt.plot(Tc, Ec, marker='3')
 plt.xlabel('$k_B T$')
 plt.ylabel('Energy per Spin')
 plt.legend(['L = 7', 'L = 8', 'L = 9'])
