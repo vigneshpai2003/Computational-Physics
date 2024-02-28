@@ -33,5 +33,12 @@ program scratch
     
     deallocate(t)
     deallocate(y)
+        
+    call RK4(1, f, 0.0d0, [0.0d0], 0.01d0, 156, t, y)
+
+    print *, t(156), y(156, :)
+    
+    deallocate(t)
+    deallocate(y)
     
 end program scratch

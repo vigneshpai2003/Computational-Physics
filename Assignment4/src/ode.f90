@@ -1,6 +1,6 @@
 module ode
     implicit none
-    
+
     abstract interface
         function integrable_function(d, t, y) result(f)
             integer, intent(in) :: d
@@ -15,11 +15,11 @@ contains
         procedure(integrable_function) :: f
         real(8), intent(in) :: t_0, y_0(d), step
         real(8), allocatable, intent(out) :: t(:), y(:, :)
-        
+
         integer :: i
 
-        allocate(t(N))
-        allocate(y(N, d))
+        allocate (t(N))
+        allocate (y(N, d))
 
         t(1) = t_0
         y(1, :) = y_0
@@ -35,11 +35,11 @@ contains
         procedure(integrable_function) :: f
         real(8), intent(in) :: t_0, y_0(d), step
         real(8), allocatable, intent(out) :: t(:), y(:, :)
-        
+
         integer :: i
 
-        allocate(t(N))
-        allocate(y(N, d))
+        allocate (t(N))
+        allocate (y(N, d))
 
         t(1) = t_0
         y(1, :) = y_0
@@ -55,11 +55,11 @@ contains
         procedure(integrable_function) :: f
         real(8), intent(in) :: t_0, y_0(d), step
         real(8), allocatable, intent(out) :: t(:), y(:, :)
-        
+
         integer :: i
 
-        allocate(t(N))
-        allocate(y(N, d))
+        allocate (t(N))
+        allocate (y(N, d))
 
         t(1) = t_0
         y(1, :) = y_0
@@ -67,8 +67,8 @@ contains
         do i = 2, N
             t(i) = t(i - 1) + step
             y(i, :) = y(i - 1, :) + 0.5 * step * ( &
-                f(d, t(i - 1), y(i - 1, :)) + &
-                f(d, t(i - 1) + step, y(i - 1, :) + step * f(d, t(i - 1), y(i - 1, :))))
+                      f(d, t(i - 1), y(i - 1, :)) + &
+                      f(d, t(i - 1) + step, y(i - 1, :) + step * f(d, t(i - 1), y(i - 1, :))))
         end do
     end subroutine
 
@@ -77,20 +77,23 @@ contains
         procedure(integrable_function) :: f
         real(8), intent(in) :: t_0, y_0(d), step
         real(8), allocatable, intent(out) :: t(:), y(:, :)
-        
-        integer :: i
 
-        allocate(t(N))
-        allocate(y(N, d))
+        integer :: i
+        real(8) :: k1(d), k2(d), k3(d), k4(d)
+
+        allocate (t(N))
+        allocate (y(N, d))
 
         t(1) = t_0
         y(1, :) = y_0
 
         do i = 2, N
             t(i) = t(i - 1) + step
-            y(i, :) = y(i - 1, :) + 0.5 * step * ( &
-                f(d, t(i - 1), y(i - 1, :)) + &
-                f(d, t(i - 1) + step, y(i - 1, :) + step * f(d, t(i - 1), y(i - 1, :))))
+            k1 = f(d, t(i - 1), y(i - 1, :))
+            k2 = f(d, t(i - 1) + step / 2, y(i - 1, :) + k1 * step / 2)
+            k3 = f(d, t(i - 1) + step / 2, y(i - 1, :) + k2 * step / 2)
+            k4 = f(d, t(i - 1) + step, y(i - 1, :) + k3 * step)
+            y(i, :) = y(i - 1, :) + step * (k1 + 2 * k2 + 2 * k3 + k4) / 6
         end do
     end subroutine
 end module ode
