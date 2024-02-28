@@ -8,7 +8,7 @@ from pathlib import Path
 import argparse
 
 
-timer = '/usr/bin/time --format="\\n Executed in %e seconds with %P CPU"'
+timer = 'time --format="\\n Executed in %e seconds with %P CPU"'
 
 
 class Bool:
