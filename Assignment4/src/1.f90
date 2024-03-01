@@ -15,30 +15,47 @@ program scratch
 
     call euler(1, f, 0.0d0, [0.0d0], 0.001d0, 1551, t, y)
 
-    print *, t(1551), y(1551, :)
-     
     deallocate(t)
     deallocate(y)
 
     call modified_euler(1, f, 0.0d0, [0.0d0], 0.001d0, 1551, t, y)
-
-    print *, t(1551), y(1551, :)
     
     deallocate(t)
     deallocate(y)
     
     call improved_euler(1, f, 0.0d0, [0.0d0], 0.001d0, 1551, t, y)
-
-    print *, t(1551), y(1551, :)
     
     deallocate(t)
     deallocate(y)
         
     call RK4(1, f, 0.0d0, [0.0d0], 0.01d0, 156, t, y)
-
-    print *, t(156), y(156, :)
-    
+   
     deallocate(t)
     deallocate(y)
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     
 end program scratch

@@ -5,9 +5,13 @@ from pymake import FortranCompiler as Compiler, FortranLinker as Linker
 
 ode = Compiler('src/ode.f90', 'default')
 
-a = Compiler('src/a.f90', 'default', ode)
+q1 = Compiler('src/1.f90', 'default', ode)
+q5 = Compiler('src/5.f90', 'default', ode)
+q8 = Compiler('src/8.f90', 'default', ode)
 
-la = Linker('default:a', a)
+lq1 = Linker('default:1', q1)
+lq5 = Linker('default:5', q5)
+lq8 = Linker('default:8', q8)
 
 # python plotting
 plotter = PythonScript('plot.py', '../venv/bin/python3')
@@ -27,7 +31,9 @@ latex.add_prerequisites(lambda: needs_rebuild(
 ))
 
 commands = {
-    'a': la.binary,
+    '1': lq1.binary,
+    '5': lq5.binary,
+    '8': lq8.binary,
     'clean': lambda : (
         print('🔥 CLEANING'),
         sh(f'rm -rf build data figures'),
