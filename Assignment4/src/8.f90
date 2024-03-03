@@ -23,6 +23,7 @@ program scratch
     procedure(integrable_function) f
     real(8), allocatable :: t(:), y(:, :)
     real(8) :: y_0(100)
+    integer :: io, i
 
     y_0(:) = 0
     y_0(1) = 0.8d0
@@ -30,6 +31,12 @@ program scratch
 
     call RK4(100, f, 0.0d0, y_0, 0.02d0, 2001, t, y)
     
+    open(newunit=io, file="data/8.dat")
+    do i = 1, size(t)
+        write(io, *) t(i), y(i, 1:50)
+    end do
+    close(io)
+
     deallocate(t)
     deallocate(y)
 
