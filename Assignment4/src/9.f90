@@ -20,8 +20,10 @@ program scratch
     ! initial state
     do i = 1, N
         x(i) = a + dx * (i - 1)
-        y(i) = ya + (yb - ya) * (i - 1) / (N - 1)
+        y(i) = 0.0d0 !ya + (yb - ya) * (i - 1) / (N - 1)
     end do
+    y(1) = ya
+    y(N) = yb
 
     break = .false.
 
@@ -35,8 +37,6 @@ program scratch
             
             break = abs(y(i) - y_old) < limit
         end do
-
-        print *, "h"
     end do
 
     open(newunit=io, file="data/9.dat")
