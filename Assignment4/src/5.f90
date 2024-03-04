@@ -15,34 +15,48 @@ program scratch
     real(8), allocatable :: t(:), y(:, :)
     integer :: io, i
 
+    call execute_command_line("mkdir -p data/arrays")
+
     call RK4(2, f, 0.0d0, [0.1d0, 1.9d0], 0.01d0, 5001, t, y)
-        
-    open(newunit=io, file="data/5.dat")
+
+    open(newunit=io, file="data/arrays/5.dat")
     do i = 1, size(t)
-        write(io, *) t(i), y(i, 1)
+        write(io, *) t(i), y(i, :)
     end do
+    close(io)
+
+    open(newunit=io, file="data/q5.dat")
+    write(io, *) y(size(t), 1)
     close(io)
 
     deallocate(t)
     deallocate(y)
 
-    call RK4(2, f, 0.0d0, [0.1d0, 1.999d0], 0.01d0, 5001, t, y)
+    call RK4(2, f, 0.0d0, [0.0d0, 1.999d0], 0.01d0, 5001, t, y)
         
-    open(newunit=io, file="data/6.dat")
+    open(newunit=io, file="data/arrays/6.dat")
     do i = 1, size(t)
-        write(io, *) t(i), y(i, 1)
+        write(io, *) t(i), y(i, :)
     end do
+    close(io)
+
+    open(newunit=io, file="data/q6.dat")
+    write(io, *) y(size(t), 1)
     close(io)
 
     deallocate(t)
     deallocate(y)
 
-    call RK4(2, f, 0.0d0, [0.1d0, 2.1d0], 0.01d0, 5001, t, y)
+    call RK4(2, f, 0.0d0, [0.0d0, 2.01d0], 0.01d0, 5001, t, y)
         
-    open(newunit=io, file="data/7.dat")
+    open(newunit=io, file="data/arrays/7.dat")
     do i = 1, size(t)
-        write(io, *) t(i), y(i, 1)
+        write(io, *) t(i), y(i, :)
     end do
+    close(io)
+
+    open(newunit=io, file="data/q7.dat")
+    write(io, *) y(size(t), 1)
     close(io)
 
     deallocate(t)

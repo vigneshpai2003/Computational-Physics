@@ -25,16 +25,22 @@ program scratch
     real(8) :: y_0(100)
     integer :: io, i
 
+    call execute_command_line("mkdir -p data/arrays")
+
     y_0(:) = 0
     y_0(1) = 0.8d0
     y_0(26) = 0.8d0
 
     call RK4(100, f, 0.0d0, y_0, 0.02d0, 2001, t, y)
     
-    open(newunit=io, file="data/8.dat")
+    open(newunit=io, file="data/arrays/8.dat")
     do i = 1, size(t)
-        write(io, *) t(i), y(i, 1:50)
+        write(io, *) t(i), y(i, :)
     end do
+    close(io)
+
+    open(newunit=io, file="data/q8.dat")
+    write(io, *) y(size(t), 1)
     close(io)
 
     deallocate(t)

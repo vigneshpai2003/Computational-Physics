@@ -9,7 +9,5 @@
         "${workscapeFolder}/Assignment2/src/modules",
         "${workscapeFolder}/Assignment3/src",
         "${workscapeFolder}/Assignment4/src",
-    ],
-    "modernFortranFormatter.fprettifyPath": "/home/vignesh/Documents/Computational\\ Physics/venv/bin/fprettify",
-    "modernFortranFormatter.fprettifyArgs": "-i 4 --whitespace-multdiv true"
+    ]
 }

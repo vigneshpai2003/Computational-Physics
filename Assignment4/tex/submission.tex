@@ -1,0 +1,79 @@
+\documentclass{article}
+
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{graphicx}
+
+\graphicspath{{./../figures/}}
+
+\title{Assignment 4}
+\author{Vignesh M Pai (20211132)}
+\date{}
+
+\begin{document}
+
+\maketitle
+
+\begin{center}
+    \includegraphics*[scale=0.8]{1a.png}
+\end{center}
+
+\begin{center}
+    \includegraphics*[scale=0.8]{1b.png}
+\end{center}
+
+\section*{1}
+
+$y_A - y_E$ = \input{../data/q1.dat}
+
+\section*{2}
+
+$y_A - y_{ME}$ = \input{../data/q2.dat}
+
+\section*{3}
+
+$y_A - y_{IE}$ = \input{../data/q3.dat}
+
+\section*{4}
+
+$y_A - y_{RK}$ = \input{../data/q4.dat}
+
+\begin{center}
+    \includegraphics*[scale=0.8]{7x.png}
+\end{center}
+
+\begin{center}
+    \includegraphics*[scale=0.8]{7v.png}
+\end{center}
+
+The equation of motion for a pendulum is $ml^2 \ddot{\theta} = -mg l \sin \theta$ and the initial angular velocity for which the particle goes around the circle is
+\begin{align*}
+    \frac{1}{2}ml^2 \omega^2 = 2 m g l \implies \omega = 2 \sqrt{\frac{g}{l}}
+\end{align*}
+
+\section*{5}
+
+With $v_0 = 1.9$, $x(50)$ = \input{../data/q5.dat}
+
+\section*{6}
+
+With $v_0 = 1.999$, $x(50)$ = \input{../data/q6.dat}
+
+\section*{7}
+
+With $v_0 = 2.01$, $x(50)$ = \input{../data/q7.dat}
+
+\section*{8}
+
+$y_1(40)$ = \input{../data/q8.dat}
+
+\section*{9}
+
+\begin{center}
+    \includegraphics*[scale=0.8]{9.png}
+\end{center}
+
+$y(0.8)$ = \input{../data/q9.dat}
+
+\end{document}
