@@ -48,7 +48,7 @@ for y in [dat5, dat6, dat7]:
 plt.legend(["$v_0 = 1.9$", "$v_0 = 1.999$", "$v_0 = 2.01$"])
 plt.xlabel("$t$")
 plt.ylabel("$x(t)$")
-plt.title("$\ddot{x} = - \sin x $")
+plt.title("Position\\n$\ddot{x} = - \sin x $")
 savefig("7x.png")
 
 # velocities
@@ -58,8 +58,18 @@ for y in [dat5, dat6, dat7]:
 plt.legend(["$v_0 = 1.9$", "$v_0 = 1.999$", "$v_0 = 2.01$"])
 plt.xlabel("$t$")
 plt.ylabel("$v(t)$")
-plt.title("$\ddot{x} = - \sin x $")
+plt.title("Velocity\\n$\ddot{x} = - \sin x $")
 savefig("7v.png")
+
+# energy
+for y in [dat5, dat6, dat7]:
+    plt.plot(y[1:, 0], abs(- 2 * np.cos(y[:, 1]) + y[:, 2]**2 - (- 2 * np.cos(y[0, 1]) + y[0, 2]**2))[1:], marker='o', ms=1)
+
+plt.xlabel("$t$")
+plt.ylabel("Deviation in Energy")
+plt.title("Energy")
+plt.yscale("log")
+savefig("7E.png")
 
 # 8
 dat8 = np.loadtxt(f"{data_dir}/8.dat")
