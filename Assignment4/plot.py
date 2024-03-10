@@ -48,7 +48,7 @@ for y in [dat5, dat6, dat7]:
 plt.legend(["$v_0 = 1.9$", "$v_0 = 1.999$", "$v_0 = 2.01$"])
 plt.xlabel("$t$")
 plt.ylabel("$x(t)$")
-plt.title("Position\\n$\ddot{x} = - \sin x $")
+plt.title("Position\n$\ddot{x} = - \sin x $")
 savefig("7x.png")
 
 # velocities
@@ -58,7 +58,7 @@ for y in [dat5, dat6, dat7]:
 plt.legend(["$v_0 = 1.9$", "$v_0 = 1.999$", "$v_0 = 2.01$"])
 plt.xlabel("$t$")
 plt.ylabel("$v(t)$")
-plt.title("Velocity\\n$\ddot{x} = - \sin x $")
+plt.title("Velocity\n$\ddot{x} = - \sin x $")
 savefig("7v.png")
 
 # energy
