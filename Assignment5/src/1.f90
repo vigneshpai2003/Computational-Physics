@@ -2,7 +2,7 @@ program scratch
     implicit none
     
     real(8) :: lattice(34, 34), old_lattice(34, 34), limit
-    integer :: N, i, j, iter
+    integer :: N, i, j, iter, io
 
     N = size(lattice, 1)
 
@@ -11,12 +11,12 @@ program scratch
     ! initial state
     lattice = 0.0d0
 
-    lattice(:, 1) = 3.7d0
-    lattice(:, N) = 0.4d0
+    lattice(1, :) = 3.7d0
+    lattice(N, :) = 0.4d0
     
     do i = 1, N
-        lattice(1, i) = 3.7d0 + (0.4d0 - 3.7d0) * (i - 1) / (N - 1)
-        lattice(N, i) = 3.7d0 + (0.4d0 - 3.7d0) * (i - 1) / (N - 1)
+        lattice(i, 1) = 3.7d0 + (0.4d0 - 3.7d0) * (i - 1) / (N - 1)
+        lattice(i, N) = 3.7d0 + (0.4d0 - 3.7d0) * (i - 1) / (N - 1)
     end do
 
     iter = 0
@@ -36,6 +36,16 @@ program scratch
         if (all(abs(lattice - old_lattice) < limit)) exit
     end do
 
-    print *, iter, lattice(20, 20)
+    call execute_command_line("mkdir -p data")
+
+    open(newunit=io, file="data/1.dat")
+    write(io, *) lattice(20, 20)
+    close(io)
+
+    open(newunit=io, file="data/T1.dat")
+    do i = 1, N
+        write(io, *) lattice(i, :)
+    end do
+    close(io)
 
 end program scratch

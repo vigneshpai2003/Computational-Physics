@@ -2,7 +2,7 @@ program scratch
     implicit none
     
     real(8) :: lattice(34, 34), old_lattice(34, 34), limit, A, B, C, D
-    integer :: N, i, j, iter
+    integer :: N, i, j, iter, io
 
     N = size(lattice, 1)
 
@@ -57,6 +57,17 @@ program scratch
 
     lattice = lattice + (2000.0d0 - lattice(1, 1))
 
-    print *, iter, lattice(10, 10)
+    call execute_command_line("mkdir -p data")
+
+    open(newunit=io, file="data/2.dat")
+    write(io, *) lattice(10, 10)
+    close(io)
+
+    open(newunit=io, file="data/T2.dat")
+    do i = 1, N
+        write(io, *) lattice(i, :)
+    end do
+    close(io)
+
 
 end program scratch
