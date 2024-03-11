@@ -9,5 +9,6 @@
         "${workscapeFolder}/Assignment2/src/modules",
         "${workscapeFolder}/Assignment3/src",
         "${workscapeFolder}/Assignment4/src",
+        "${workscapeFolder}/Assignment5/src",
     ]
 }
