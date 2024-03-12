@@ -19,6 +19,12 @@ program scratch
         lattice(i, N) = 3.7d0 + (0.4d0 - 3.7d0) * (i - 1) / (N - 1)
     end do
 
+    open(newunit=io, file="data/T1i.dat")
+    do i = 1, N
+        write(io, *) lattice(i, :)
+    end do
+    close(io)
+
     iter = 0
 
     do
