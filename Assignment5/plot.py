@@ -7,9 +7,11 @@ def savefig(filename):
 
 data_dir = "data/arrays"
 
+cmap = 'turbo'
+
 T = np.loadtxt("data/T1i.dat").T
 
-plt.pcolormesh(np.arange(1, 35), np.arange(1, 35), T, cmap='rainbow')
+plt.pcolormesh(np.arange(1, 35), np.arange(1, 35), T, cmap=cmap)
 plt.colorbar()
 plt.xlabel("$x$")
 plt.ylabel("$y$")
@@ -18,7 +20,7 @@ savefig("1i.png")
 
 T = np.loadtxt("data/T1.dat").T
 
-plt.pcolormesh(np.arange(1, 35), np.arange(1, 35), T, cmap='rainbow')
+plt.pcolormesh(np.arange(1, 35), np.arange(1, 35), T, cmap=cmap)
 plt.colorbar()
 plt.xlabel("$x$")
 plt.ylabel("$y$")
@@ -27,7 +29,7 @@ savefig("1.png")
 
 T = np.loadtxt("data/T2.dat").T
 
-plt.pcolormesh(np.arange(1, 35), np.arange(1, 35), T, cmap='rainbow')
+plt.pcolormesh(np.arange(1, 35), np.arange(1, 35), T, cmap=cmap)
 plt.colorbar()
 plt.xlabel("$x$")
 plt.ylabel("$y$")
