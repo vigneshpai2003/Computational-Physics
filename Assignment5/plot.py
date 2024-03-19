@@ -5,8 +5,6 @@ def savefig(filename):
     plt.savefig(f'figures/{filename}', bbox_inches='tight', dpi=500)
     plt.clf()
 
-data_dir = "data/arrays"
-
 cmap = 'turbo'
 
 T = np.loadtxt("data/T1i.dat").T
