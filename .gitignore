@@ -7,11 +7,10 @@ __pycache__
 *.o
 *.dat
 build
+data
 
 *.log
 *.aux
 *.gz
 *.fls
 *.fdb_latexmk
-
-*/data
