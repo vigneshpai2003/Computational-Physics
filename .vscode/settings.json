@@ -5,12 +5,6 @@
     "fortran.fortls.disableAutoupdate": true,
 
     "fortran.linter.includePaths": [
-        // "${workscapeFolder}/Assignment1/src/modules",
-        // "${workscapeFolder}/Assignment2/src/modules",
-        // "${workscapeFolder}/Assignment3/src",
-        // "${workscapeFolder}/Assignment4/src",
-        // "${workscapeFolder}/Assignment5/src",
-        // "${workscapeFolder}/Assignment6/src/modules",
-        "${workscapeFolder}/Assignment7/src",
+        "${workscapeFolder}/Variational_Method/src",
     ]
 }
