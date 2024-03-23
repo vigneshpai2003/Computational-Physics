@@ -22,7 +22,7 @@ f_postprocessor.add_prerequisites(lambda: needs_rebuild(
 ))
 
 # post processing with python
-py_postprocessor = PythonScript('plot.py', '../venv/bin/python3')
+py_postprocessor = PythonScript('plot.py', 'python3')
 py_postprocessor.add_prerequisites(lambda: needs_rebuild(
     files_in('figures', True),
     [Path(py_postprocessor.source)] + files_in('data', True)

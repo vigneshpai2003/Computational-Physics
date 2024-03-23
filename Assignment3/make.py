@@ -27,7 +27,7 @@ lf = Linker('default:f', cf)
 lf.add_flags('-O2', '-fopenmp')
 
 # python plotting
-plotter = PythonScript('plot.py', '../venv/bin/python3')
+plotter = PythonScript('plot.py', 'python3')
 plotter.add_prerequisites(lambda: needs_rebuild(
     files_in('figures', True),
     [Path(plotter.source)] + files_in('data', True)
@@ -36,7 +36,7 @@ plotter.add_preruns(
     lambda: mkdir('figures')
 )
 
-plotter_test = PythonScript('plot-test.py', '../venv/bin/python3')
+plotter_test = PythonScript('plot-test.py', 'python3')
 plotter_test.add_prerequisites(lambda: needs_rebuild(
     files_in('figures', True),
     [Path(plotter.source)] + files_in('data/test', True)

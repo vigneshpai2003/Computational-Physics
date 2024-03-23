@@ -23,7 +23,7 @@ scratch = Compiler('src/scratch.f90', 'default', integrate)
 lscratch = Linker('default:scratch', scratch)
 
 # python plotting
-plotter = PythonScript('plot.py', '../venv/bin/python3')
+plotter = PythonScript('plot.py', 'python3')
 plotter.add_prerequisites(lambda: needs_rebuild(
     files_in('figures', True),
     [Path(plotter.source)] + files_in('data', True)
