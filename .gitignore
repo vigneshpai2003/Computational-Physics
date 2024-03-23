@@ -14,6 +14,4 @@ build
 *.fls
 *.fdb_latexmk
 
-Assignment*/data
-Assignment*/data-backup
-Assignment*/figures
+*/data
