@@ -10,6 +10,7 @@
         // "${workscapeFolder}/Assignment3/src",
         // "${workscapeFolder}/Assignment4/src",
         // "${workscapeFolder}/Assignment5/src",
-        "${workscapeFolder}/Assignment6/src/modules",
+        // "${workscapeFolder}/Assignment6/src/modules",
+        "${workscapeFolder}/Assignment7/src",
     ]
 }
