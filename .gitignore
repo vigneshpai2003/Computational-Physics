@@ -1,5 +1,4 @@
-venv/
-venv-nix/
+.devbox
 __pycache__
 
 *.bin

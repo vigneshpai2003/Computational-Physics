@@ -1,0 +1,140 @@
+{
+  "lockfile_version": "1",
+  "packages": {
+    "ffmpeg@latest": {
+      "last_modified": "2024-03-18T12:38:16Z",
+      "resolved": "github:NixOS/nixpkgs/e367f7a1fb93137af22a3908f00b9a35e2d286a7#ffmpeg",
+      "source": "devbox-search",
+      "version": "6.1",
+      "systems": {
+        "aarch64-darwin": {
+          "store_path": "/nix/store/96yjnpmrvplymwb7mn7yv6wvqwwc18hw-ffmpeg-6.1-bin"
+        },
+        "aarch64-linux": {
+          "store_path": "/nix/store/glhbsrjx892abmr41m0f704rbhk2ln7z-ffmpeg-6.1-bin"
+        },
+        "x86_64-darwin": {
+          "store_path": "/nix/store/ady88sn4i958ppl46il6pk76jsxwx50q-ffmpeg-6.1-bin"
+        },
+        "x86_64-linux": {
+          "store_path": "/nix/store/5d25hv3g41zbc3n04744q87fsadvq6ij-ffmpeg-6.1-bin"
+        }
+      }
+    },
+    "gfortran@latest": {
+      "last_modified": "2024-03-08T13:51:52Z",
+      "resolved": "github:NixOS/nixpkgs/a343533bccc62400e8a9560423486a3b6c11a23b#gfortran",
+      "source": "devbox-search",
+      "version": "13.2.0",
+      "systems": {
+        "aarch64-linux": {
+          "store_path": "/nix/store/g1bmjhhqss0m995qrxgb4f5710dcd960-gfortran-wrapper-13.2.0"
+        },
+        "x86_64-linux": {
+          "store_path": "/nix/store/jz8nyf2a9q0a2qararracd2z60ci9yi0-gfortran-wrapper-13.2.0"
+        }
+      }
+    },
+    "lapack@latest": {
+      "last_modified": "2024-03-08T13:51:52Z",
+      "resolved": "github:NixOS/nixpkgs/a343533bccc62400e8a9560423486a3b6c11a23b#lapack",
+      "source": "devbox-search",
+      "version": "3",
+      "systems": {
+        "aarch64-darwin": {
+          "store_path": "/nix/store/hj28lydmnps81xzrnpcqqdhqb7ryw3ca-lapack-3"
+        },
+        "aarch64-linux": {
+          "store_path": "/nix/store/d1qzjvx5lqyl5676f4yy9fsjq3fqmwir-lapack-3"
+        },
+        "x86_64-darwin": {
+          "store_path": "/nix/store/42ys7i9m9ggkd2ynd28n5j4vxw249kjl-lapack-3"
+        },
+        "x86_64-linux": {
+          "store_path": "/nix/store/g1ilk839nbg5h8sqc50036pir5vn9g11-lapack-3"
+        }
+      }
+    },
+    "python311@latest": {
+      "last_modified": "2023-09-27T18:02:17Z",
+      "plugin_version": "0.0.3",
+      "resolved": "github:NixOS/nixpkgs/517501bcf14ae6ec47efd6a17dda0ca8e6d866f9#python311",
+      "source": "devbox-search",
+      "version": "3.11.4",
+      "systems": {
+        "aarch64-darwin": {
+          "store_path": "/nix/store/rycxjkclx801wrhwrgllak0302xzjdvx-python3-3.11.4"
+        },
+        "aarch64-linux": {
+          "store_path": "/nix/store/h4xi1djsmhk7bjdipz58xkfnf8lc9mpm-python3-3.11.4"
+        },
+        "x86_64-darwin": {
+          "store_path": "/nix/store/yqs2zxkxn61xzimdaz1pbgawk2lnm0d8-python3-3.11.4"
+        },
+        "x86_64-linux": {
+          "store_path": "/nix/store/3k7is7nc2xbav8a48vx7arad522d8czx-python3-3.11.4"
+        }
+      }
+    },
+    "python311Packages.matplotlib@latest": {
+      "last_modified": "2024-03-08T13:51:52Z",
+      "resolved": "github:NixOS/nixpkgs/a343533bccc62400e8a9560423486a3b6c11a23b#python311Packages.matplotlib",
+      "source": "devbox-search",
+      "version": "3.8.2",
+      "systems": {
+        "aarch64-darwin": {
+          "store_path": "/nix/store/pm4qf1sygvgq1kx49vwpfspaxxm55412-python3.11-matplotlib-3.8.2"
+        },
+        "aarch64-linux": {
+          "store_path": "/nix/store/fqrkfnp2g1vsma3hixbwq0ck264fsahd-python3.11-matplotlib-3.8.2"
+        },
+        "x86_64-darwin": {
+          "store_path": "/nix/store/ayp2ils1mrrddki14wm03plgb56i46c1-python3.11-matplotlib-3.8.2"
+        },
+        "x86_64-linux": {
+          "store_path": "/nix/store/n7lkb6kbrwshiqcvgl52hmmm3yx5ny61-python3.11-matplotlib-3.8.2"
+        }
+      }
+    },
+    "python311Packages.numpy@latest": {
+      "last_modified": "2024-03-19T05:49:19Z",
+      "resolved": "github:NixOS/nixpkgs/5710127d9693421e78cca4f74fac2db6d67162b1#python311Packages.numpy",
+      "source": "devbox-search",
+      "version": "1.26.4",
+      "systems": {
+        "aarch64-darwin": {
+          "store_path": "/nix/store/win74r2qglapfhvq6dwwqd1i7zgchags-python3.11-numpy-1.26.4"
+        },
+        "aarch64-linux": {
+          "store_path": "/nix/store/y5c1k3qs0g4rnkgyizyklxaylic74rb1-python3.11-numpy-1.26.4"
+        },
+        "x86_64-darwin": {
+          "store_path": "/nix/store/dfzzi5hbdyaprg2a1yaxbvxshg00pla7-python3.11-numpy-1.26.4"
+        },
+        "x86_64-linux": {
+          "store_path": "/nix/store/y8k1qdx0lf8f4rli72jwb3qjvshlxjvk-python3.11-numpy-1.26.4"
+        }
+      }
+    },
+    "python311Packages.scipy@latest": {
+      "last_modified": "2024-03-08T13:51:52Z",
+      "resolved": "github:NixOS/nixpkgs/a343533bccc62400e8a9560423486a3b6c11a23b#python311Packages.scipy",
+      "source": "devbox-search",
+      "version": "1.12.0",
+      "systems": {
+        "aarch64-darwin": {
+          "store_path": "/nix/store/jibinvlw2kaf9bz65m0q829lb0x1qqf4-python3.11-scipy-1.12.0"
+        },
+        "aarch64-linux": {
+          "store_path": "/nix/store/dy5548lvmkvx7aczzsnqc95jh3b72dq4-python3.11-scipy-1.12.0"
+        },
+        "x86_64-darwin": {
+          "store_path": "/nix/store/isr037y77v1i59j4vrryz0n973siz6cj-python3.11-scipy-1.12.0"
+        },
+        "x86_64-linux": {
+          "store_path": "/nix/store/0p6kv39b0qf36p7i5dni48yfrac3k80i-python3.11-scipy-1.12.0"
+        }
+      }
+    }
+  }
+}

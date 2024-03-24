@@ -1,0 +1,17 @@
+{
+  "packages": [
+    "gfortran@latest",
+    "python311@latest",
+    "python311Packages.numpy@latest",
+    "python311Packages.scipy@latest",
+    "python311Packages.matplotlib@latest",
+    "lapack@latest",
+    "ffmpeg@latest"
+  ],
+  "shell": {
+    "init_hook": [
+      "source $VENV_DIR/bin/activate",
+      "python --version"
+    ]
+  }
+}
