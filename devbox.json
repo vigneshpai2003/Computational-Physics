@@ -1,17 +1,19 @@
 {
   "packages": [
     "gfortran@latest",
-    "python311@latest",
+    "python@3.11.8",
     "python311Packages.numpy@latest",
     "python311Packages.scipy@latest",
     "python311Packages.matplotlib@latest",
+    "python311Packages.jupyter@latest",
     "lapack@latest",
     "ffmpeg@latest"
   ],
   "shell": {
     "init_hook": [
       "source $VENV_DIR/bin/activate",
-      "python --version"
+      "python --version",
+      "gfortran --version | head -n 1"
     ]
   }
 }
