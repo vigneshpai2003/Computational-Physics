@@ -3,16 +3,6 @@ module quantum
     
     real(8), parameter :: pi = 2 * asin(1.0d0)
 
-    ! Interface block for LAPACK subroutines
-    interface
-        subroutine dsyev(jobz, uplo, n, a, lda, w, work, lwork, info)
-            character(1), intent(in) :: jobz, uplo
-            integer, intent(in) :: n, lda, lwork
-            real(8), intent(inout) :: a(lda,*), w(n), work(*)
-            integer, intent(out) :: info
-        end subroutine dsyev
-    end interface
-
 contains
 
     subroutine H_matrix(H, a, b, V)

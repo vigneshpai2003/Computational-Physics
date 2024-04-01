@@ -22,8 +22,7 @@ commands = {
     'v': l['v'].binary,
     'clean': lambda : (
         print('🔥 CLEANING'),
-        sh(f'rm -rf build data figures'),
-        LaTeXCompiler.clean('tex'),
+        sh(f'rm -rf build data'),
         print('')
     )
 }

@@ -13,7 +13,7 @@ program scratch
     V = 1.0d0
 
     ! vary n
-    a = 50.0d0
+    a = 25.0d0
     do n = 10, 100, 5
 
         dim = 2 * n + 1
