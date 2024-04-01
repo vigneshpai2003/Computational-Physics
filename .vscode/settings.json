@@ -5,6 +5,6 @@
     "fortran.fortls.disableAutoupdate": true,
 
     "fortran.linter.includePaths": [
-        "${workscapeFolder}/Variational_Method/src",
+        "${workscapeFolder}/Molecular_Dynamics/src",
     ]
 }
