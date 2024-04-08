@@ -5,17 +5,19 @@ module md
 
 contains
 
-    subroutine force(N, x, F)
+    subroutine force(N, x, F, PE)
         integer, intent(in) :: N
         real(8), intent(in) :: x(3 * N)
-        real(8), intent(out) :: F(3 * N)
+        real(8), intent(out) :: F(3 * N), PE
 
         integer :: i, j, k
-        real(8) :: dx(3), r, F_r, F_c
+        real(8) :: dx(3), r, F_r, F_c, V_c
 
         F_c = 12 * sigma**12 / r_c**13 - 6 * sigma**6 / r_c**7
+        V_c = ((sigma / r_c)**12 - (sigma / r_c)**6) + F_c * r_c
 
         F = 0
+        PE = 0
 
         do i = 1, 3 * N - 3, 3
             do j = i + 3, 3 * N, 3
@@ -31,11 +33,14 @@ contains
                     F_r = 12 * sigma**12 / r**13 - 6 * sigma**6 / r**7 - F_c
                     F(i : i + 2) = F(i : i + 2) + F_r * dx / r
                     F(j : j + 2) = F(j : j + 2) - F_r * dx / r
+
+                    PE = PE + (sigma / r)**12 - (sigma / r)**6 + F_c * r - V_c
                 end if
             end do
         end do
 
         F = F * 4 * epsilon
+        PE = PE * 4 * epsilon
     end subroutine
 
     subroutine update_x(N, x, v, F, dt)
@@ -52,10 +57,10 @@ contains
         real(8), intent(in) :: F(3 * N), F_new(3 * N), dt
         real(8), intent(inout) :: v(3 * N)
         
-        v = v + 0.25d0 * (F + F_new) * dt / m
+        v = v + 0.5d0 * (F + F_new) * dt / m
     end subroutine
 
-    function KE(N, v) result(E)
+    function calc_KE(N, v) result(E)
         integer, intent(in) :: N
         real(8), intent(in) :: v(3 * N)
         real(8) :: E
@@ -63,7 +68,7 @@ contains
         E = 0.5d0 * m * sum(v * v)
     end function
 
-    function PE(N, x) result(E)
+    function calc_PE(N, x) result(E)
         integer, intent(in) :: N
         real(8), intent(in) :: x(3 * N)
         real(8) :: E
@@ -94,7 +99,6 @@ contains
 
         E = E * 4 * epsilon
     end function
-
 
     subroutine write_array(file, arr)
         character(*), intent(in) :: file
@@ -137,10 +141,10 @@ program scratch
     implicit none
 
     integer, parameter :: N = 2197, N_t = 100
-    real(8), parameter :: dt = 0.0005d0
+    real(8), parameter :: dt = 0.005d0
 
     integer :: i, j, k, p, N_L
-    real(8) :: x(3 * N), v(3 * N), F(3 * N), F_new(3 * N), E
+    real(8) :: x(3 * N), v(3 * N), F(3 * N), F_new(3 * N), KE, PE
 
     call execute_command_line('mkdir -p data')
 
@@ -150,9 +154,6 @@ program scratch
     epsilon = 1
     sigma = 1
     kBT = 1
-
-    call random_number(x)
-    x = x * L
 
     N_L = nint(N**(1.0d0/3))
 
@@ -169,18 +170,20 @@ program scratch
     call random_number(v)
     v = sqrt(12 * kBT / m) * (v - 0.5d0)
     
-    call force(N, x, F)
+    call force(N, x, F, PE)
 
     do i = 1, N_t
         call update_x(N, x, v, F, dt)
 
-        call force(N, x, F_new)
+        call force(N, x, F_new, PE)
 
         call update_v(N, v, F, F_new, dt)
 
         F = F_new
 
-        print *, KE(N, v) + PE(N, v), KE(N, v) / N, PE(N, v) / N
+        KE = calc_KE(N, v)
+
+        print *, KE + PE, KE / N, PE / N
     end do
 
 end program scratch
