@@ -100,6 +100,13 @@ contains
         E = E * 4 * epsilon
     end function
 
+    subroutine thermostat(N, v, new_kBT)
+        integer, intent(in) :: N
+        real(8), intent(inout) :: v(3 * N), new_kBT
+
+        v = v * sqrt(3 * new_kBT * N / (2 * calc_KE(N, v)))
+    end subroutine
+
     subroutine write_array(file, arr)
         character(*), intent(in) :: file
         real*8, intent(in) :: arr(:)
@@ -140,7 +147,7 @@ program scratch
     use md
     implicit none
 
-    integer, parameter :: N = 2197, N_t = 100
+    integer, parameter :: N = 2197, N_t = 1000
     real(8), parameter :: dt = 0.005d0
 
     integer :: i, j, k, p, N_L
@@ -182,6 +189,11 @@ program scratch
         F = F_new
 
         KE = calc_KE(N, v)
+
+        if (mod(i, 100) == 0) then
+            call thermostat(N, v, kBT)
+            print *, "Thermostat"
+        end if
 
         print *, KE + PE, KE / N, PE / N
     end do
