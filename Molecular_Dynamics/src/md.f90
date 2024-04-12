@@ -14,14 +14,15 @@ contains
         N_L = nint(N**(1.0d0/3))
 
         p = 1
-        do i = 0, N_L
+        outer: do i = 0, N_L
             do j = 0, N_L
                 do k = 0, N_L
-                    if (p .le. 3 * N) x(p: p + 2) = [i, j, k] * L / (N_L + 1)
+                    if (p > 3 * N - 2) exit outer
+                    x(p: p + 2) = [i, j, k] * L / (N_L + 1)
                     p = p + 3
                 end do
             end do
-        end do
+        end do outer
     end subroutine
 
     ! sets uniform random velocities scaled by specified temperature
@@ -103,7 +104,7 @@ contains
     end subroutine
 
     ! updates positions using velocity verlet
-    subroutine update_x(N, x, v, F, dt)
+    subroutine update_position(N, x, v, F, dt)
         integer, intent(in) :: N
         real(8), intent(in) :: v(3 * N), F(3 * N), dt
         real(8), intent(inout) :: x(3 * N)
@@ -113,7 +114,7 @@ contains
     end subroutine
 
     ! updates velocities using velocity verlet
-    subroutine update_v(N, v, F, F_new, dt)
+    subroutine update_velocity(N, v, F, F_new, dt)
         integer, intent(in) :: N
         real(8), intent(in) :: F(3 * N), F_new(3 * N), dt
         real(8), intent(inout) :: v(3 * N)
@@ -277,6 +278,29 @@ contains
         real(8), intent(inout) :: v(3 * N), new_kBT
 
         v = v * sqrt(3 * new_kBT * N / (2 * calc_KE(N, v)))
+    end subroutine
+
+    subroutine pair_correlation(N, x, dr, r_max, g)
+        integer, intent(in) :: N
+        real(8), intent(in) :: x(3 * N), dr, r_max
+        real(8) :: g(:)
+
+        integer :: i, j, k
+        real(8) :: dx(3), r
+
+        g = 0
+
+        do i = 1, N - 1
+            do j = i + 1, N
+                dx = x(3 * i - 2 : 3 * i) - x(3 * j - 2 : 3 * j)
+                call periodic_distance(dx, r)
+    
+                if (r > r_max) cycle
+
+                k = 1 + nint(r / dr)
+                g(k) = g(k) + 1
+            end do
+        end do
     end subroutine
 
     ! ----------------------------------------

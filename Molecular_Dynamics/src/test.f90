@@ -2,8 +2,8 @@ program scratch
     use md
     implicit none
 
-    integer, parameter :: N = 2197
-    integer, parameter :: N_t = 1000, t_thermostat = 100, t_neighbors = 50
+    integer, parameter :: N = 1200
+    integer, parameter :: N_t = 10000, t_thermostat = 100, t_neighbors = 50
     real(8), parameter :: dt = 0.005d0
 
     integer :: i
@@ -32,16 +32,16 @@ program scratch
     call lattice_positions(N, x)
     call random_velocities(N, v, kBT)
 
-    call calc_neighbors_single(N, x, neighbors_size, neighbors, R)
+    call calc_neighbors_multi(N, x, neighbors_size, neighbors, R)
 
-    call force_single(N, x, F, neighbors_size, neighbors, PE)
+    call force_multi(N, x, F, neighbors_size, neighbors, PE)
 
     do i = 1, N_t
-        call update_x(N, x, v, F, dt)
+        call update_position(N, x, v, F, dt)
 
-        call force_single(N, x, F_new, neighbors_size, neighbors, PE)
+        call force_multi(N, x, F_new, neighbors_size, neighbors, PE)
 
-        call update_v(N, v, F, F_new, dt)
+        call update_velocity(N, v, F, F_new, dt)
 
         F = F_new
 
@@ -51,13 +51,13 @@ program scratch
         end if
 
         if (mod(i, t_neighbors) == 0) then
-            call calc_neighbors_single(N, x, neighbors_size, neighbors, R)
+            call calc_neighbors_multi(N, x, neighbors_size, neighbors, R)
             print *, "Neighbors", sum(neighbors_size) / N, maxval(neighbors_size), minval(neighbors_size)
         end if
 
         KE = calc_KE(N, v)
 
-        print *, i, KE + PE, KE / N, PE / N, sum(v(1:3*N:3))
+        ! print *, i, KE + PE, KE / N, PE / N, sum(v(1:3*N:3))
     end do
 
 end program scratch
