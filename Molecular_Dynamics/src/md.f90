@@ -50,24 +50,29 @@ contains
     end subroutine
 
     ! calculates the neighbor matrix with particles within distance r_c + R
-    subroutine calc_neighbors(N, x, neighbors, R)
+    subroutine calc_neighbors(N, x, neighbors_size, neighbors, R)
         integer, intent(in) :: N
         real(8), intent(in) :: x(3 * N)
-        logical, intent(out) :: neighbors(N, N)
+        integer, intent(out) :: neighbors_size(N), neighbors(N, N)
         real(8), intent(in) :: R
 
         integer :: i, j
         real(8) :: dx(3), d
 
-        neighbors = .false.
+        neighbors_size = 0
 
         do i = 1, N - 1
             do j = i + 1, N
                 dx = x(3 * i - 2 : 3 * i) - x(3 * j - 2 : 3 * j)
                 call periodic_distance(dx, d)
 
-                neighbors(i, j) = (d < r_c + R)
-                neighbors(j, i) = neighbors(i, j)
+                if (d < r_c + R) then
+                    neighbors_size(i) = neighbors_size(i) + 1
+                    neighbors_size(j) = neighbors_size(j) + 1
+
+                    neighbors(i, neighbors_size(i)) = j
+                    neighbors(j, neighbors_size(j)) = i
+                end if
             end do
         end do
     end subroutine
@@ -92,13 +97,13 @@ contains
     end subroutine
 
     ! calculates force and potential energy
-    subroutine force(N, x, F, neighbors, PE)
+    subroutine force(N, x, F, neighbors_size, neighbors, PE)
         integer, intent(in) :: N
         real(8), intent(in) :: x(3 * N)
         real(8), intent(out) :: F(3 * N), PE
-        logical, intent(in) :: neighbors(N, N)
+        integer, intent(in) :: neighbors_size(N), neighbors(N, N)
 
-        integer :: i, j
+        integer :: i, j, k
         real(8) :: dx(3), r, F_r, F_c, V_c
 
         F_c = 12 * sigma**12 / r_c**13 - 6 * sigma**6 / r_c**7
@@ -107,17 +112,16 @@ contains
         F = 0
         PE = 0
 
-        do i = 1, 3 * N - 3, 3
-            do j = i + 3, 3 * N, 3
-                if (.not. neighbors((i + 2) / 3, (j + 2)/ 3)) cycle
+        do i = 1, N
+            do k = 1, neighbors_size(i)
+                j = neighbors(i, k)
 
-                dx = x(i : i + 2) - x(j : j + 2)
+                dx = x(3 * i - 2 : 3 * i) - x(3 * j - 2 : 3 * j)
                 call periodic_distance(dx, r)
 
                 if (r < r_c) then
                     F_r = 12 * sigma**12 / r**13 - 6 * sigma**6 / r**7 - F_c
-                    F(i : i + 2) = F(i : i + 2) + F_r * dx / r
-                    F(j : j + 2) = F(j : j + 2) - F_r * dx / r
+                    F(3 * i - 2: 3 * i) = F(3 * i - 2 : 3 * i) + F_r * dx / r
 
                     PE = PE + (sigma / r)**12 - (sigma / r)**6 + F_c * r - V_c
                 end if
@@ -125,17 +129,17 @@ contains
         end do
 
         F = F * 4 * epsilon
-        PE = PE * 4 * epsilon
+        PE = PE * 4 * epsilon / 2
     end subroutine
 
     ! calculates force and potential energy using multiple cores
-    subroutine force_multi(N, x, F, neighbors, PE)
+    subroutine force_multi(N, x, F, neighbors_size, neighbors, PE)
         integer, intent(in) :: N
         real(8), intent(in) :: x(3 * N)
         real(8), intent(out) :: F(3 * N), PE
-        logical, intent(in) :: neighbors(N, N)
+        integer, intent(in) :: neighbors_size(N), neighbors(N, N)
 
-        integer :: i, j
+        integer :: i, j, k
         real(8) :: dx(3), r, F_r, F_c, V_c, PE_array(N)
 
         F_c = 12 * sigma**12 / r_c**13 - 6 * sigma**6 / r_c**7
@@ -144,20 +148,19 @@ contains
         F = 0
         PE_array = 0
 
-        !$omp parallel do default(shared) private(i, j, dx, r, F_r)
-        do i = 1, 3 * N, 3
-            do j = 1, 3 * N, 3
-                if ((i == j) .or. (.not. neighbors((i + 2) / 3, (j + 2) / 3))) cycle
+        !$omp parallel do default(shared) private(i, j, k, dx, r, F_r)
+        do i = 1, N
+            do k = 1, neighbors_size(i)
+                j = neighbors(i, k)
 
-                dx = x(i : i + 2) - x(j : j + 2)
+                dx = x(3 * i - 2 : 3 * i) - x(3 * j - 2 : 3 * j)
                 call periodic_distance(dx, r)
 
                 if (r < r_c) then
                     F_r = 12 * sigma**12 / r**13 - 6 * sigma**6 / r**7 - F_c
-                    F(i : i + 2) = F(i : i + 2) + F_r * dx / r
+                    F(3 * i - 2: 3 * i) = F(3 * i - 2 : 3 * i) + F_r * dx / r
 
-                    PE_array((i + 2) / 3) = PE_array((i + 2) / 3) &
-                                          + (sigma / r)**12 - (sigma / r)**6 + F_c * r - V_c
+                    PE_array(i) = PE_array(i) + (sigma / r)**12 - (sigma / r)**6 + F_c * r - V_c
                 end if
             end do
         end do

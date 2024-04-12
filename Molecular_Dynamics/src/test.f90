@@ -6,9 +6,9 @@ program scratch
     integer, parameter :: N_t = 1000, t_thermostat = 100, t_neighbors = 50
     real(8), parameter :: dt = 0.005d0
 
-    integer :: i, n_neighbors(N)
+    integer :: i
     real(8) :: x(3 * N), v(3 * N), F(3 * N), F_new(3 * N), KE, PE, R
-    logical :: neighbors(N, N)
+    integer :: neighbors_size(N), neighbors(N, N)
 
     call execute_command_line('mkdir -p data')
 
@@ -32,14 +32,14 @@ program scratch
     call lattice_positions(N, x)
     call random_velocities(N, v, kBT)
 
-    call calc_neighbors(N, x, neighbors, R)
+    call calc_neighbors(N, x, neighbors_size, neighbors, R)
 
-    call force_multi(N, x, F, neighbors, PE)
+    call force_multi(N, x, F, neighbors_size, neighbors, PE)
 
     do i = 1, N_t
         call update_x(N, x, v, F, dt)
 
-        call force_multi(N, x, F_new, neighbors, PE)
+        call force_multi(N, x, F_new, neighbors_size, neighbors, PE)
 
         call update_v(N, v, F, F_new, dt)
 
@@ -51,9 +51,8 @@ program scratch
         end if
 
         if (mod(i, t_neighbors) == 0) then
-            call calc_neighbors(N, x, neighbors, R)
-            n_neighbors = count(neighbors, 1)
-            print *, "Neighbors", sum(n_neighbors) / N, maxval(n_neighbors), minval(n_neighbors)
+            call calc_neighbors(N, x, neighbors_size, neighbors, R)
+            print *, "Neighbors", sum(neighbors_size) / N, maxval(neighbors_size), minval(neighbors_size)
         end if
 
         KE = calc_KE(N, v)
