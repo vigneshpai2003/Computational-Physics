@@ -32,14 +32,14 @@ program scratch
     call lattice_positions(N, x)
     call random_velocities(N, v, kBT)
 
-    call calc_neighbors(N, x, neighbors_size, neighbors, R)
+    call calc_neighbors_single(N, x, neighbors_size, neighbors, R)
 
-    call force_multi(N, x, F, neighbors_size, neighbors, PE)
+    call force_single(N, x, F, neighbors_size, neighbors, PE)
 
     do i = 1, N_t
         call update_x(N, x, v, F, dt)
 
-        call force_multi(N, x, F_new, neighbors_size, neighbors, PE)
+        call force_single(N, x, F_new, neighbors_size, neighbors, PE)
 
         call update_v(N, v, F, F_new, dt)
 
@@ -51,13 +51,13 @@ program scratch
         end if
 
         if (mod(i, t_neighbors) == 0) then
-            call calc_neighbors(N, x, neighbors_size, neighbors, R)
+            call calc_neighbors_single(N, x, neighbors_size, neighbors, R)
             print *, "Neighbors", sum(neighbors_size) / N, maxval(neighbors_size), minval(neighbors_size)
         end if
 
         KE = calc_KE(N, v)
 
-        ! print *, i, KE + PE, KE / N, PE / N, sum(v(1:3*N:3))
+        print *, i, KE + PE, KE / N, PE / N, sum(v(1:3*N:3))
     end do
 
 end program scratch
