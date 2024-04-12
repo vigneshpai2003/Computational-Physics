@@ -3,7 +3,7 @@ program scratch
     implicit none
 
     integer, parameter :: N = 2197
-    integer, parameter :: N_t = 1000, t_thermostat = 100, t_neighbors = 20
+    integer, parameter :: N_t = 1000, t_thermostat = 100, t_neighbors = 50
     real(8), parameter :: dt = 0.005d0
 
     integer :: i, n_neighbors(N)
@@ -34,12 +34,12 @@ program scratch
 
     call calc_neighbors(N, x, neighbors, R)
 
-    call force(N, x, F, neighbors, PE)
+    call force_multi(N, x, F, neighbors, PE)
 
     do i = 1, N_t
         call update_x(N, x, v, F, dt)
 
-        call force(N, x, F_new, neighbors, PE)
+        call force_multi(N, x, F_new, neighbors, PE)
 
         call update_v(N, v, F, F_new, dt)
 
@@ -58,7 +58,7 @@ program scratch
 
         KE = calc_KE(N, v)
 
-        print *, i, KE + PE, KE / N, PE / N, sum(v(1:3*N:3))
+        ! print *, i, KE + PE, KE / N, PE / N, sum(v(1:3*N:3))
     end do
 
 end program scratch

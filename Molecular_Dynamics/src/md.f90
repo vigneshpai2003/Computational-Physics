@@ -91,8 +91,45 @@ contains
         v = v + 0.5d0 * (F + F_new) * dt / m
     end subroutine
 
-    ! calculates force and PE based on neighbor matrix
+    ! calculates force and potential energy
     subroutine force(N, x, F, neighbors, PE)
+        integer, intent(in) :: N
+        real(8), intent(in) :: x(3 * N)
+        real(8), intent(out) :: F(3 * N), PE
+        logical, intent(in) :: neighbors(N, N)
+
+        integer :: i, j
+        real(8) :: dx(3), r, F_r, F_c, V_c
+
+        F_c = 12 * sigma**12 / r_c**13 - 6 * sigma**6 / r_c**7
+        V_c = ((sigma / r_c)**12 - (sigma / r_c)**6) + F_c * r_c
+
+        F = 0
+        PE = 0
+
+        do i = 1, 3 * N - 3, 3
+            do j = i + 3, 3 * N, 3
+                if (.not. neighbors((i + 2) / 3, (j + 2)/ 3)) cycle
+
+                dx = x(i : i + 2) - x(j : j + 2)
+                call periodic_distance(dx, r)
+
+                if (r < r_c) then
+                    F_r = 12 * sigma**12 / r**13 - 6 * sigma**6 / r**7 - F_c
+                    F(i : i + 2) = F(i : i + 2) + F_r * dx / r
+                    F(j : j + 2) = F(j : j + 2) - F_r * dx / r
+
+                    PE = PE + (sigma / r)**12 - (sigma / r)**6 + F_c * r - V_c
+                end if
+            end do
+        end do
+
+        F = F * 4 * epsilon
+        PE = PE * 4 * epsilon
+    end subroutine
+
+    ! calculates force and potential energy using multiple cores
+    subroutine force_multi(N, x, F, neighbors, PE)
         integer, intent(in) :: N
         real(8), intent(in) :: x(3 * N)
         real(8), intent(out) :: F(3 * N), PE
@@ -160,7 +197,6 @@ contains
                 if (.not. neighbors((i + 2) / 3, (j + 2)/ 3)) cycle
 
                 dx = x(i : i + 2) - x(j : j + 2)
-
                 call periodic_distance(dx, r)
 
                 if (r < r_c) then
@@ -170,6 +206,41 @@ contains
         end do
 
         E = E * 4 * epsilon
+    end function
+
+    ! calculates potential energy using multiple cores
+    function calc_PE_multi(N, x, neighbors) result(PE)
+        integer, intent(in) :: N
+        real(8), intent(in) :: x(3 * N)
+        logical, intent(in) :: neighbors(N, N)
+        
+        real(8) :: PE
+
+        integer :: i, j
+        real(8) :: dx(3), r, F_c, V_c, PE_array(N)
+
+        F_c = 12 * sigma**12 / r_c**13 - 6 * sigma**6 / r_c**7
+        V_c = ((sigma / r_c)**12 - (sigma / r_c)**6) + F_c * r_c
+
+        PE_array = 0
+
+        !$omp parallel do default(shared) private(i, j, dx, r)
+        do i = 1, 3 * N, 3
+            do j = 1, 3 * N, 3
+                if ((i == j) .or. (.not. neighbors((i + 2) / 3, (j + 2) / 3))) cycle
+
+                dx = x(i : i + 2) - x(j : j + 2)
+                call periodic_distance(dx, r)
+
+                if (r < r_c) then
+                    PE_array((i + 2) / 3) = PE_array((i + 2) / 3) &
+                                          + (sigma / r)**12 - (sigma / r)**6 + F_c * r - V_c
+                end if
+            end do
+        end do
+        !$omp end parallel do
+
+        PE = sum(PE_array) * 4 * epsilon / 2
     end function
 
     ! scales velocities to get a particular temperature
