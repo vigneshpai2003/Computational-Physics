@@ -8,6 +8,9 @@ md.add_flags('-O2', '-fopenmp')
 
 c = {
     'test' : Compiler('src/test.f90', 'default', md),
+    '2' : Compiler('src/2.f90', 'default', md),
+    '3' : Compiler('src/3.f90', 'default', md),
+    '4' : Compiler('src/4.f90', 'default', md),
 }
 
 l = dict((name, Linker(f'default:{name}', compiler)) for name, compiler in c.items())
@@ -21,6 +24,9 @@ for linker in [*l.values()]:
 commands = {
     'all': ['test'],
     'test': l['test'].binary,
+    '2': l['2'].binary,
+    '3': l['3'].binary,
+    '4': l['4'].binary,
     'clean': lambda : (
         print('🔥 CLEANING'),
         sh(f'rm -rf build data'),

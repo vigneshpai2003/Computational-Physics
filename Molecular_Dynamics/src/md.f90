@@ -159,6 +159,38 @@ contains
         PE = PE * 4 * epsilon
     end subroutine
 
+    ! does not calculate potential energy
+    subroutine force_only_single(N, x, F, neighbors_size, neighbors)
+        integer, intent(in) :: N
+        real(8), intent(in) :: x(3 * N)
+        real(8), intent(out) :: F(3 * N)
+        integer, intent(in) :: neighbors_size(N), neighbors(N, N)
+
+        integer :: i, j, k
+        real(8) :: dx(3), r, F_r, F_c
+
+        F_c = 12 * sigma**12 / r_c**13 - 6 * sigma**6 / r_c**7
+
+        F = 0
+
+        do i = 1, N - 1
+            do k = 1, neighbors_size(i)
+                j = neighbors(i, k)
+
+                dx = x(3 * i - 2 : 3 * i) - x(3 * j - 2 : 3 * j)
+                call periodic_distance(dx, r)
+
+                if (r < r_c) then
+                    F_r = 12 * sigma**12 / r**13 - 6 * sigma**6 / r**7 - F_c
+                    F(3 * i - 2: 3 * i) = F(3 * i - 2 : 3 * i) + F_r * dx / r
+                    F(3 * j - 2: 3 * j) = F(3 * j - 2 : 3 * j) - F_r * dx / r
+                end if
+            end do
+        end do
+
+        F = F * 4 * epsilon
+    end subroutine
+
     ! calculates force and potential energy using multiple cores
     subroutine force_multi(N, x, F, neighbors_size, neighbors, PE)
         integer, intent(in) :: N
@@ -195,6 +227,39 @@ contains
 
         F = F * 4 * epsilon
         PE = sum(PE_array) * 4 * epsilon / 2
+    end subroutine
+
+    ! does not calculate potential energy
+    subroutine force_only_multi(N, x, F, neighbors_size, neighbors)
+        integer, intent(in) :: N
+        real(8), intent(in) :: x(3 * N)
+        real(8), intent(out) :: F(3 * N)
+        integer, intent(in) :: neighbors_size(N), neighbors(N, N)
+
+        integer :: i, j, k
+        real(8) :: dx(3), r, F_r, F_c
+
+        F_c = 12 * sigma**12 / r_c**13 - 6 * sigma**6 / r_c**7
+
+        F = 0
+
+        !$omp parallel do default(shared) private(i, j, k, dx, r, F_r)
+        do i = 1, N
+            do k = 1, neighbors_size(i)
+                j = neighbors(i, k)
+
+                dx = x(3 * i - 2 : 3 * i) - x(3 * j - 2 : 3 * j)
+                call periodic_distance(dx, r)
+
+                if (r < r_c) then
+                    F_r = 12 * sigma**12 / r**13 - 6 * sigma**6 / r**7 - F_c
+                    F(3 * i - 2: 3 * i) = F(3 * i - 2 : 3 * i) + F_r * dx / r
+                end if
+            end do
+        end do
+        !$omp end parallel do
+
+        F = F * 4 * epsilon
     end subroutine
 
     ! calculates kinetic energy
@@ -284,7 +349,7 @@ contains
     subroutine radial_count(N, x, dr, n_r)
         integer, intent(in) :: N
         real(8), intent(in) :: x(3 * N), dr
-        real(8) :: n_r(:)
+        real(8), intent(out) :: n_r(:)
 
         integer :: i, j, k
         real(8) :: dx(3), r
@@ -296,8 +361,8 @@ contains
                 dx = x(3 * i - 2 : 3 * i) - x(3 * j - 2 : 3 * j)
                 call periodic_distance(dx, r)
     
-                k = 1 + nint(r / dr)
-                if (k .le. size(n_r)) n_r(k) = n_r(k) + 2
+                k = 1 + int(r / dr)
+                if (k <= size(n_r)) n_r(k) = n_r(k) + 2
             end do
         end do
 
@@ -317,6 +382,24 @@ contains
         end do
 
         n_r = n_r / (4 * 3.1415d0 * dr * N / L**3)
+    end subroutine
+
+    ! calculates velocity distribution
+    subroutine velocity_dist(N, v, dv, rho_v)
+        integer, intent(in) :: N
+        real(8), intent(in) :: dv, v(3 * N)
+        real(8), intent(out) :: rho_v(:)
+
+        integer :: i, k
+
+        rho_v = 0
+
+        do i = 1, N
+            k = 1 + int(sum(v(3 * i - 2: 3 * i)**2) / dv)
+            if (k <= size(rho_v)) rho_v(k) = rho_v(k) + 1
+        end do
+
+        rho_v = rho_v / N
     end subroutine
 
     ! ----------------------------------------
