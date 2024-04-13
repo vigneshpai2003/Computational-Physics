@@ -50,6 +50,21 @@ contains
         r = norm2(dx)
     end subroutine
 
+    function msd(N, x, x_0) result(ms)
+        integer, intent(in) :: N
+        real(8), intent(in) :: x(3 * N), x_0(3 * N)
+
+        real(8) :: ms, dx(3 * N)
+        integer :: i
+
+        dx = x - x_0
+        do i = 1, 3 * N
+            if (abs(dx(i)) > L / 2) dx(i) = dx(i) - sign(L, dx(i))
+        end do
+
+        ms = sum(dx**2) / N
+    end function
+
     ! calculates the neighbor matrix with particles within distance r_c + R
     subroutine calc_neighbors_single(N, x, neighbors_size, neighbors, R)
         integer, intent(in) :: N
