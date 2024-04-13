@@ -2,7 +2,7 @@ program scratch
     use md
     implicit none
 
-    integer, parameter :: N = 1200
+    integer, parameter :: N = 3600
     integer :: N_t, t_thermostat, t_neighbors, t_eq, t_data, data_counter
     real(8) :: dt
 
@@ -19,7 +19,7 @@ program scratch
     real(8), allocatable :: rho_v(:), rho_v_temp(:)
 
     integer :: io
-    character(len=*), parameter :: data_folder = "data/4"
+    character(len=*), parameter :: data_folder = "data/7"
 
     call execute_command_line('mkdir -p '//data_folder)
 

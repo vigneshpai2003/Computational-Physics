@@ -340,7 +340,8 @@ contains
     ! scales velocities to get a particular temperature
     subroutine thermostat(N, v, new_kBT)
         integer, intent(in) :: N
-        real(8), intent(inout) :: v(3 * N), new_kBT
+        real(8), intent(in) :: new_kBT
+        real(8), intent(inout) :: v(3 * N)
 
         v = v * sqrt(3 * new_kBT * N / (2 * calc_KE(N, v)))
     end subroutine
@@ -395,7 +396,7 @@ contains
         rho_v = 0
 
         do i = 1, N
-            k = 1 + int(sum(v(3 * i - 2: 3 * i)**2) / dv)
+            k = 1 + int(sqrt(sum(v(3 * i - 2: 3 * i)**2)) / dv)
             if (k <= size(rho_v)) rho_v(k) = rho_v(k) + 1
         end do
 
