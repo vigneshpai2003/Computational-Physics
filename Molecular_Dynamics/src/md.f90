@@ -280,27 +280,43 @@ contains
         v = v * sqrt(3 * new_kBT * N / (2 * calc_KE(N, v)))
     end subroutine
 
-    subroutine pair_correlation(N, x, dr, r_max, g)
+    ! counts the average number of particles between distance r and r + dr
+    subroutine radial_count(N, x, dr, n_r)
         integer, intent(in) :: N
-        real(8), intent(in) :: x(3 * N), dr, r_max
-        real(8) :: g(:)
+        real(8), intent(in) :: x(3 * N), dr
+        real(8) :: n_r(:)
 
         integer :: i, j, k
         real(8) :: dx(3), r
 
-        g = 0
+        n_r = 0
 
         do i = 1, N - 1
             do j = i + 1, N
                 dx = x(3 * i - 2 : 3 * i) - x(3 * j - 2 : 3 * j)
                 call periodic_distance(dx, r)
     
-                if (r > r_max) cycle
-
                 k = 1 + nint(r / dr)
-                g(k) = g(k) + 1
+                if (k .le. size(n_r)) n_r(k) = n_r(k) + 2
             end do
         end do
+
+        n_r = n_r / N
+    end subroutine
+
+    ! converts radial count to pair correlation function
+    subroutine n_r_to_pair_correlation(N, dr, n_r)
+        integer, intent(in) :: N
+        real(8), intent(in) :: dr
+        real(8), intent(inout) :: n_r(:)
+
+        integer :: i
+
+        do i = 1, size(n_r)
+            n_r(i) = n_r(i) / (dr * (i - 0.5d0))**2
+        end do
+
+        n_r = n_r / (4 * 3.1415d0 * dr * N / L**3)
     end subroutine
 
     ! ----------------------------------------
