@@ -20,6 +20,8 @@ l = dict((name, Linker(f'default:{name}', compiler)) for name, compiler in c.ite
 for compiler in [*c.values()]:
     compiler.add_flags('-O2')
 
+c['diffusion'].add_flags('-fopenmp')
+
 for linker in [*l.values()]:
     linker.add_flags('-O2', '-fopenmp')
 

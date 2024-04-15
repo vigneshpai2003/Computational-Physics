@@ -54,21 +54,6 @@ contains
         r = norm2(dx)
     end subroutine
 
-    function msd(N, x, x_0) result(ms)
-        integer, intent(in) :: N
-        real(8), intent(in) :: x(3 * N), x_0(3 * N)
-
-        real(8) :: ms, dx(3 * N)
-        integer :: i
-
-        dx = x - x_0
-        do i = 1, 3 * N
-            if (abs(dx(i)) > L / 2) dx(i) = dx(i) - sign(L, dx(i))
-        end do
-
-        ms = sum(dx**2) / N
-    end function
-
     ! calculates the neighbor matrix with particles within distance r_c + R
     subroutine calc_neighbors_single(N, x, neighbors_size, neighbors, R)
         integer, intent(in) :: N
@@ -129,6 +114,18 @@ contains
         real(8), intent(inout) :: x(3 * N)
 
         x = x + v * dt + 0.5d0 * F * dt**2 / m
+        x = mod(x, L) + merge(L, 0.0d0, x < 0.0d0)
+    end subroutine
+
+    ! updates positions using velocity verlet and also returns dx
+    subroutine update_position_dx(N, x, v, F, dt, dx)
+        integer, intent(in) :: N
+        real(8), intent(in) :: v(3 * N), F(3 * N), dt
+        real(8), intent(inout) :: x(3 * N)
+        real(8), intent(out) :: dx(3 * N)
+
+        dx = v * dt + 0.5d0 * F * dt**2 / m
+        x = x + dx
         x = mod(x, L) + merge(L, 0.0d0, x < 0.0d0)
     end subroutine
 
