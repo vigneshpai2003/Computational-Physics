@@ -33,6 +33,10 @@ contains
         
         call random_number(v)
         v = sqrt(12 * init_kBT / m) * (v - 0.5d0)
+
+        v(1::3) = v(1::3) - sum(v(1::3)) / N
+        v(2::3) = v(2::3) - sum(v(2::3)) / N
+        v(3::3) = v(3::3) - sum(v(3::3)) / N
     end subroutine
 
     ! computes the distance r in a periodic cubic volume given a displacement
