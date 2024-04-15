@@ -29,8 +29,8 @@ program scratch
     kBT = 1
 
     ! simulation parameters
-    N_t = 200000
-    N_eq = 10000
+    N_t = 400000
+    N_eq = 20000
     dt = 0.0025d0
     t_thermostat = 100
     t_neighbors = 40
