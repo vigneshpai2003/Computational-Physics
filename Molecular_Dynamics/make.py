@@ -13,6 +13,8 @@ c = {
     '6' : Compiler('src/6.f90', 'default', md),
     '7' : Compiler('src/7.f90', 'default', md),
     'diffusion' : Compiler('src/diffusion.f90', 'default', md),
+    'temp1' : Compiler('src/temp1.f90', 'default', md),
+    'temp2' : Compiler('src/temp2.f90', 'default', md),
 }
 
 l = dict((name, Linker(f'default:{name}', compiler)) for name, compiler in c.items())
@@ -32,6 +34,8 @@ commands = {
     '6': l['6'].binary,
     '7': l['7'].binary,
     'd': l['diffusion'].binary,
+    't1': l['temp1'].binary,
+    't2': l['temp2'].binary,
     'clean': lambda : (
         print('🔥 CLEANING'),
         sh(f'rm -rf build data'),
